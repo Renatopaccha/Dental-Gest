@@ -2,10 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ProductDisplay } from "@/types/product";
-
-// Imagen placeholder cuando no hay imagen del producto
-const PLACEHOLDER_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png";
+import { ProductDisplay, getDisplayImage } from "@/types/product";
 
 interface ProductCardProps {
     product: ProductDisplay;
@@ -16,14 +13,13 @@ interface ProductCardProps {
  * - Precios con descuento (precio tachado + precio de oferta)
  * - Etiqueta de porcentaje de descuento
  * - Estados de stock dinámicos
- * - Imágenes desde Django o placeholder
+ * - Lógica de fallback para imágenes (principal → galería → placeholder)
  */
 export function ProductCard({ product }: ProductCardProps) {
     const {
         id,
         name,
         price,
-        discountPrice,
         currentPrice,
         hasDiscount,
         discountPercentage,
@@ -31,8 +27,10 @@ export function ProductCard({ product }: ProductCardProps) {
         stockCount,
         inStock,
         stockStatus,
-        imageUrl,
     } = product;
+
+    // Obtener imagen a mostrar (con fallback automático)
+    const displayImage = getDisplayImage(product);
 
     // Determinar color y texto del estado de stock
     const getStockStyle = () => {
@@ -47,17 +45,34 @@ export function ProductCard({ product }: ProductCardProps) {
 
     const stockStyle = getStockStyle();
 
+    // Verificar si es una imagen local (placeholder)
+    const isLocalImage = displayImage.startsWith('/');
+
     return (
         <div className="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-100 dark:border-slate-700">
             {/* Imagen del producto */}
-            <Link href={`/producto/${id}`} className="block relative h-48 overflow-hidden">
-                <Image
-                    src={imageUrl || PLACEHOLDER_IMAGE}
-                    alt={name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+            <Link href={`/producto/${id}`} className="block relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-700">
+                {isLocalImage ? (
+                    // Placeholder local
+                    <div className="w-full h-full flex items-center justify-center">
+                        <Image
+                            src={displayImage}
+                            alt={name}
+                            width={80}
+                            height={80}
+                            className="opacity-30"
+                        />
+                    </div>
+                ) : (
+                    // Imagen remota
+                    <Image
+                        src={displayImage}
+                        alt={name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                )}
 
                 {/* Badge de descuento */}
                 {hasDiscount && (
@@ -70,6 +85,14 @@ export function ProductCard({ product }: ProductCardProps) {
                 <div className={`absolute top-2 right-2 ${stockStyle.bg} ${stockStyle.text} text-xs font-semibold px-2 py-1 rounded-md`}>
                     {stockStatus.toUpperCase()}
                 </div>
+
+                {/* Indicador de galería */}
+                {product.images && product.images.length > 0 && (
+                    <div className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1">
+                        <span className="material-icons-outlined text-sm">photo_library</span>
+                        +{product.images.length}
+                    </div>
+                )}
             </Link>
 
             {/* Información del producto */}

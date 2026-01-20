@@ -2,6 +2,9 @@
  * Tipos de datos para productos - Coincide con la API de Django
  */
 
+/**
+ * Categoría de productos
+ */
 export interface Category {
     id: number;
     name: string;
@@ -10,11 +13,24 @@ export interface Category {
     product_count: number;
 }
 
+/**
+ * Imagen adicional de la galería de un producto
+ */
+export interface ProductImage {
+    id: number;
+    image: string;
+    image_url: string | null;
+    order: number;
+}
+
+/**
+ * Producto tal como viene de la API de Django
+ */
 export interface Product {
     id: number;
     name: string;
     description: string;
-    price: string; // DecimalField viene como string desde Django
+    price: string;
     discount_price: string | null;
     current_price: string;
     has_discount: boolean;
@@ -27,6 +43,7 @@ export interface Product {
     stock_status: 'En Stock' | 'Poco Stock' | 'Agotado';
     image: string | null;
     image_url: string | null;
+    images: ProductImage[];
     created_at: string;
     updated_at: string;
 }
@@ -42,7 +59,7 @@ export interface PaginatedResponse<T> {
 }
 
 /**
- * Tipo simplificado para usar en componentes (con valores numéricos)
+ * Tipo simplificado para usar en componentes
  */
 export interface ProductDisplay {
     id: number;
@@ -58,6 +75,7 @@ export interface ProductDisplay {
     inStock: boolean;
     stockStatus: 'En Stock' | 'Poco Stock' | 'Agotado';
     imageUrl: string | null;
+    images: ProductImage[];
 }
 
 /**
@@ -78,5 +96,22 @@ export function toProductDisplay(product: Product): ProductDisplay {
         inStock: product.in_stock,
         stockStatus: product.stock_status,
         imageUrl: product.image_url,
+        images: product.images || [],
     };
+}
+
+/**
+ * Obtiene la URL de imagen a mostrar para un producto.
+ * Lógica de fallback: principal -> galería -> placeholder
+ */
+export function getDisplayImage(product: ProductDisplay): string {
+    if (product.imageUrl) {
+        return product.imageUrl;
+    }
+
+    if (product.images && product.images.length > 0 && product.images[0].image_url) {
+        return product.images[0].image_url;
+    }
+
+    return '/file.svg';
 }
