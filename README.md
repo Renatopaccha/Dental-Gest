@@ -6,38 +6,54 @@ E-commerce de suministros odontológicos para profesionales y estudiantes.
 
 ```
 Dental-Gest/
-├── Backend/           # API Django (por implementar)
-├── Fronted/           # Diseños HTML originales
-│   ├── code.html      # Página de inicio
-│   ├── code 2.html    # Detalle de producto
-│   └── code 3.html    # Catálogo
-└── frontend-next/     # Frontend Next.js 14+
-    ├── src/
-    │   ├── app/       # Páginas (App Router)
-    │   ├── components/# Componentes reutilizables
-    │   └── lib/       # Datos y utilidades
-    └── public/        # Recursos estáticos
+├── Backend/               # API Django REST
+│   ├── dental_api/        # Configuración Django
+│   ├── products/          # App de productos
+│   ├── media/             # Imágenes subidas
+│   └── venv/              # Entorno virtual
+├── Fronted/               # Diseños HTML originales
+└── frontend-next/         # Frontend Next.js 14+
 ```
 
-## 🚀 Cómo ejecutar el Frontend
+## 🚀 Cómo Ejecutar
 
+### Backend (Django)
+```bash
+cd Backend
+source venv/bin/activate
+python manage.py runserver 8000
+```
+- **Admin**: http://localhost:8000/admin/ (admin / admin123)
+- **API**: http://localhost:8000/api/products/
+
+### Frontend (Next.js)
 ```bash
 cd frontend-next
 npm install
 npm run dev
 ```
+- **Web**: http://localhost:3000
 
-Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
+## 🔌 API Endpoints
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/api/products/` | Lista todos los productos |
+| GET | `/api/products/{id}/` | Detalle de producto |
+| GET | `/api/categories/` | Lista categorías |
+| GET | `/api/products/?category=1` | Filtrar por categoría |
+| GET | `/api/products/?in_stock=true` | Solo en stock |
+| GET | `/api/products/?search=kit` | Buscar |
 
 ## 🛠 Tecnologías
 
 - **Frontend**: Next.js 14+, TypeScript, Tailwind CSS v4
-- **Backend**: Django (por implementar)
+- **Backend**: Django 5, Django REST Framework, SQLite
 
 ## ✨ Características
 
-- ✅ Diseño moderno y responsivo
-- ✅ Modo oscuro
+- ✅ Panel de admin personalizado para el dueño
+- ✅ Lógica automática de stock (En Stock / Poco Stock / Agotado)
 - ✅ Integración con WhatsApp
-- ✅ Lógica dinámica de stock (En Stock / Poco Stock / Agotado)
-- ✅ Optimización de imágenes con Next.js
+- ✅ CORS configurado para desarrollo
+- ✅ Modo oscuro en frontend
