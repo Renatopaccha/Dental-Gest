@@ -2,18 +2,14 @@
 Serializadores para la API REST de productos.
 
 Convierte los modelos Django a formato JSON para el frontend de Next.js.
-Incluye campos calculados como current_price y discount_percentage.
+Incluye campos calculados y galería de imágenes.
 """
 from rest_framework import serializers
-from .models import Category, Product
+from .models import Category, Product, ProductImage
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    """
-    Serializador para categorías.
-    
-    Incluye conteo de productos en cada categoría.
-    """
+    """Serializador para categorías."""
     product_count = serializers.SerializerMethodField()
     
     class Meta:
@@ -21,26 +17,40 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'slug', 'description', 'product_count']
     
     def get_product_count(self, obj):
-        """Devuelve la cantidad de productos en la categoría."""
         return obj.products.count()
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    """Serializador para imágenes adicionales de la galería."""
+    image_url = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = ProductImage
+        fields = ['id', 'image', 'image_url', 'order']
+    
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return f"http://127.0.0.1:8000{obj.image.url}"
+        return None
 
 
 class ProductSerializer(serializers.ModelSerializer):
     """
-    Serializador para productos.
+    Serializador completo para productos.
     
-    Incluye información adicional calculada:
-    - Nombre de la categoría
-    - Precio actual (con descuento si aplica)
-    - Porcentaje de descuento
-    - Estado de stock textual
-    - URL completa de la imagen
+    Incluye:
+    - Información de categoría
+    - Precios con descuento
+    - Imagen principal + galería de imágenes adicionales
     """
     # Campos de relación
     category_name = serializers.CharField(source='category.name', read_only=True)
     category_slug = serializers.CharField(source='category.slug', read_only=True)
     
-    # Campos calculados (properties del modelo)
+    # Campos calculados
     current_price = serializers.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -50,8 +60,11 @@ class ProductSerializer(serializers.ModelSerializer):
     discount_percentage = serializers.IntegerField(read_only=True)
     stock_status = serializers.CharField(read_only=True)
     
-    # URL de imagen
+    # Imagen principal
     image_url = serializers.SerializerMethodField()
+    
+    # Galería de imágenes adicionales
+    images = ProductImageSerializer(many=True, read_only=True)
     
     class Meta:
         model = Product
@@ -72,33 +85,22 @@ class ProductSerializer(serializers.ModelSerializer):
             'stock_status',
             'image',
             'image_url',
+            'images',  # Galería de imágenes adicionales
             'created_at',
             'updated_at',
         ]
     
     def get_image_url(self, obj):
-        """
-        Devuelve la URL absoluta de la imagen del producto.
-        
-        Esto es necesario para que el frontend Next.js pueda cargar las imágenes
-        desde el servidor Django.
-        """
         if obj.image:
             request = self.context.get('request')
             if request:
                 return request.build_absolute_uri(obj.image.url)
-            # Fallback sin request context
             return f"http://127.0.0.1:8000{obj.image.url}"
         return None
 
 
 class ProductListSerializer(serializers.ModelSerializer):
-    """
-    Serializador simplificado para listados de productos.
-    
-    Incluye solo los campos necesarios para las tarjetas de producto,
-    optimizando el tamaño de la respuesta.
-    """
+    """Serializador simplificado para listados de productos."""
     category_name = serializers.CharField(source='category.name', read_only=True)
     current_price = serializers.DecimalField(
         max_digits=10, 
@@ -109,6 +111,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     discount_percentage = serializers.IntegerField(read_only=True)
     stock_status = serializers.CharField(read_only=True)
     image_url = serializers.SerializerMethodField()
+    image_count = serializers.SerializerMethodField()
     
     class Meta:
         model = Product
@@ -125,6 +128,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             'in_stock',
             'stock_status',
             'image_url',
+            'image_count',
         ]
     
     def get_image_url(self, obj):
@@ -134,3 +138,7 @@ class ProductListSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(obj.image.url)
             return f"http://127.0.0.1:8000{obj.image.url}"
         return None
+    
+    def get_image_count(self, obj):
+        """Devuelve el número de imágenes adicionales."""
+        return obj.images.count()

@@ -4,7 +4,7 @@ URL configuration for dental_api project.
 Incluye:
 - Panel de administración en /admin/
 - API REST en /api/
-- Archivos media en desarrollo
+- Archivos media en desarrollo (CRÍTICO para imágenes)
 """
 from django.contrib import admin
 from django.urls import path, include
@@ -19,6 +19,8 @@ urlpatterns = [
     path('api/', include('products.urls')),
 ]
 
-# Servir archivos media en desarrollo
+# CRÍTICO: Servir archivos media en desarrollo
+# Sin esto, las imágenes subidas desde el admin NO se mostrarán
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

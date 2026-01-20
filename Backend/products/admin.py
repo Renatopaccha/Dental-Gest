@@ -1,29 +1,46 @@
 """
 Configuración del panel de administración para productos odontológicos.
 
-Panel personalizado para usuarios no técnicos con:
-- Vista de lista con thumbnails
-- Filtros por categoría y stock
-- Búsqueda por nombre
-- Formularios organizados
+Incluye:
+- CategoryAdmin: Gestión de categorías
+- ProductAdmin: Gestión de productos con thumbnails, filtros y galería inline
+- ProductImageInline: Subida de múltiples imágenes
 """
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product
+from .models import Category, Product, ProductImage
+
+
+class ProductImageInline(admin.TabularInline):
+    """
+    Inline para subir múltiples imágenes de producto.
+    Aparece como tabla debajo del formulario principal.
+    """
+    model = ProductImage
+    extra = 3  # Mostrar 3 filas vacías por defecto
+    fields = ['image', 'order', 'image_preview']
+    readonly_fields = ['image_preview']
+    
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" width="80" height="80" '
+                'style="object-fit: cover; border-radius: 4px;" />',
+                obj.image.url
+            )
+        return "Sin imagen"
+    image_preview.short_description = "Vista previa"
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    """
-    Admin para gestionar categorías de productos.
-    """
+    """Admin para gestionar categorías de productos."""
     list_display = ['name', 'slug', 'product_count', 'created_at']
     search_fields = ['name']
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ['created_at']
     
     def product_count(self, obj):
-        """Muestra la cantidad de productos en la categoría."""
         count = obj.products.count()
         return count
     product_count.short_description = "Productos"
@@ -33,15 +50,13 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     """
     Admin personalizado para gestión de productos.
-    
-    Diseñado para ser usado por el dueño del negocio sin conocimientos técnicos.
-    Incluye vista de thumbnails, filtros útiles y búsqueda.
+    Incluye galería de imágenes mediante inline.
     """
     
-    # =========================================================================
-    # CONFIGURACIÓN DE LISTA
-    # =========================================================================
+    # Inline para galería de imágenes
+    inlines = [ProductImageInline]
     
+    # Configuración de lista
     list_display = [
         'thumbnail_preview',
         'name',
@@ -50,6 +65,7 @@ class ProductAdmin(admin.ModelAdmin):
         'discount_display',
         'stock_count',
         'stock_status_icon',
+        'image_count',
         'created_at',
     ]
     list_display_links = ['thumbnail_preview', 'name']
@@ -57,10 +73,7 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ['name', 'description']
     list_per_page = 20
     
-    # =========================================================================
-    # CONFIGURACIÓN DE FORMULARIO
-    # =========================================================================
-    
+    # Configuración de formulario
     fieldsets = (
         ('📦 Información del Producto', {
             'fields': ('name', 'description', 'category')
@@ -69,9 +82,9 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('price', 'discount_price', 'stock_count'),
             'description': 'Si estableces un precio de oferta, se mostrará como descuento en la tienda.'
         }),
-        ('🖼️ Imagen', {
+        ('🖼️ Imagen Principal', {
             'fields': ('image', 'image_preview'),
-            'description': 'Sube una foto del producto (JPG o PNG). Tamaño recomendado: 800x800px.'
+            'description': 'Esta es la imagen principal. Usa la sección "Imágenes de producto" abajo para añadir fotos adicionales.'
         }),
         ('📊 Información del Sistema', {
             'classes': ('collapse',),
@@ -81,14 +94,7 @@ class ProductAdmin(admin.ModelAdmin):
     
     readonly_fields = ['in_stock', 'created_at', 'updated_at', 'image_preview']
     
-    # =========================================================================
-    # MÉTODOS PERSONALIZADOS PARA LA LISTA
-    # =========================================================================
-    
     def thumbnail_preview(self, obj):
-        """
-        Muestra una miniatura de la imagen del producto en la lista.
-        """
         if obj.image:
             return format_html(
                 '<img src="{}" width="50" height="50" '
@@ -98,18 +104,16 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html(
             '<div style="width: 50px; height: 50px; background: #f0f0f0; '
             'border-radius: 8px; display: flex; align-items: center; '
-            'justify-content: center; color: #999; font-size: 10px;">Sin imagen</div>'
+            'justify-content: center; color: #999; font-size: 10px;">Sin foto</div>'
         )
     thumbnail_preview.short_description = "Foto"
     
     def price_display(self, obj):
-        """Muestra el precio en formato de moneda."""
         return format_html('<strong>${}</strong>', obj.price)
     price_display.short_description = "Precio"
     price_display.admin_order_field = 'price'
     
     def discount_display(self, obj):
-        """Muestra el precio de oferta y porcentaje de descuento."""
         if obj.discount_price:
             return format_html(
                 '<span style="color: #28a745; font-weight: bold;">'
@@ -121,23 +125,16 @@ class ProductAdmin(admin.ModelAdmin):
     discount_display.short_description = "Oferta"
     
     def stock_status_icon(self, obj):
-        """
-        Muestra un indicador visual del estado de stock.
-        
-        - 🟢 Verde: En Stock (5+ unidades)
-        - 🟡 Amarillo: Poco Stock (1-4 unidades)
-        - 🔴 Rojo: Agotado (0 unidades)
-        """
         if obj.stock_count == 0:
-            color = "#dc3545"  # Rojo
+            color = "#dc3545"
             text = "Agotado"
             icon = "❌"
         elif obj.stock_count < 5:
-            color = "#ffc107"  # Amarillo
+            color = "#ffc107"
             text = "Poco Stock"
             icon = "⚠️"
         else:
-            color = "#28a745"  # Verde
+            color = "#28a745"
             text = "En Stock"
             icon = "✅"
         
@@ -148,10 +145,19 @@ class ProductAdmin(admin.ModelAdmin):
     stock_status_icon.short_description = "Estado"
     stock_status_icon.admin_order_field = 'stock_count'
     
+    def image_count(self, obj):
+        """Muestra el número de imágenes adicionales."""
+        count = obj.images.count()
+        if count > 0:
+            return format_html(
+                '<span style="background: #17a2b8; color: white; '
+                'padding: 2px 8px; border-radius: 10px;">+{}</span>',
+                count
+            )
+        return format_html('<span style="color: #999;">0</span>')
+    image_count.short_description = "Fotos extra"
+    
     def image_preview(self, obj):
-        """
-        Muestra una vista previa grande de la imagen en el formulario de edición.
-        """
         if obj.image:
             return format_html(
                 '<img src="{}" width="300" style="border-radius: 8px; '
@@ -162,10 +168,7 @@ class ProductAdmin(admin.ModelAdmin):
     image_preview.short_description = "Vista previa"
 
 
-# =============================================================================
-# PERSONALIZACIÓN DEL ADMIN SITE
-# =============================================================================
-
+# Personalización del Admin Site
 admin.site.site_header = "🦷 Dental GEST_EC - Administración"
 admin.site.site_title = "Dental GEST_EC"
 admin.site.index_title = "Panel de Control"
