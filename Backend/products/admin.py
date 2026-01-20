@@ -47,6 +47,7 @@ class ProductAdmin(admin.ModelAdmin):
         'name',
         'category',
         'price_display',
+        'discount_display',
         'stock_count',
         'stock_status_icon',
         'created_at',
@@ -65,14 +66,15 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('name', 'description', 'category')
         }),
         ('💰 Precio y Stock', {
-            'fields': ('price', 'stock_count')
+            'fields': ('price', 'discount_price', 'stock_count'),
+            'description': 'Si estableces un precio de oferta, se mostrará como descuento en la tienda.'
         }),
         ('🖼️ Imagen', {
             'fields': ('image', 'image_preview'),
             'description': 'Sube una foto del producto (JPG o PNG). Tamaño recomendado: 800x800px.'
         }),
         ('📊 Información del Sistema', {
-            'classes': ('collapse',),  # Se puede colapsar
+            'classes': ('collapse',),
             'fields': ('in_stock', 'created_at', 'updated_at')
         }),
     )
@@ -105,6 +107,18 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html('<strong>${}</strong>', obj.price)
     price_display.short_description = "Precio"
     price_display.admin_order_field = 'price'
+    
+    def discount_display(self, obj):
+        """Muestra el precio de oferta y porcentaje de descuento."""
+        if obj.discount_price:
+            return format_html(
+                '<span style="color: #28a745; font-weight: bold;">'
+                '${} <small style="background: #dc3545; color: white; '
+                'padding: 2px 6px; border-radius: 4px;">-{}%</small></span>',
+                obj.discount_price, obj.discount_percentage
+            )
+        return format_html('<span style="color: #999;">—</span>')
+    discount_display.short_description = "Oferta"
     
     def stock_status_icon(self, obj):
         """

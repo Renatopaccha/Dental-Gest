@@ -1,9 +1,12 @@
 """
 Modelos de datos para el catálogo de productos odontológicos.
 
-Este módulo define los modelos Category y Product con lógica de stock automática.
+Este módulo define los modelos Category y Product con lógica de stock automática
+y soporte para precios de oferta (descuentos).
 """
+from decimal import Decimal
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 
 
@@ -55,7 +58,10 @@ class Product(models.Model):
     """
     Producto del catálogo de suministros odontológicos.
     
-    Incluye lógica automática para determinar disponibilidad basada en stock_count.
+    Incluye lógica automática para:
+    - Determinar disponibilidad basada en stock_count
+    - Manejar precios de oferta (discount_price)
+    - Calcular porcentaje de descuento
     """
     name = models.CharField(
         max_length=200,
@@ -69,8 +75,16 @@ class Product(models.Model):
     price = models.DecimalField(
         max_digits=10,
         decimal_places=2,
-        verbose_name="Precio ($)",
-        help_text="Precio en dólares con 2 decimales"
+        verbose_name="Precio regular ($)",
+        help_text="Precio normal en dólares"
+    )
+    discount_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Precio de oferta ($)",
+        help_text="Precio con descuento (dejar vacío si no hay oferta)"
     )
     category = models.ForeignKey(
         Category,
@@ -86,7 +100,7 @@ class Product(models.Model):
     )
     in_stock = models.BooleanField(
         default=False,
-        editable=False,  # Se calcula automáticamente
+        editable=False,
         verbose_name="En stock",
         help_text="Indica si hay unidades disponibles (se calcula automáticamente)"
     )
@@ -114,18 +128,53 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        """Valida que el precio de oferta sea menor que el precio regular."""
+        if self.discount_price is not None and self.discount_price >= self.price:
+            raise ValidationError({
+                'discount_price': 'El precio de oferta debe ser menor que el precio regular.'
+            })
+
     def save(self, *args, **kwargs):
         """
-        Calcula automáticamente in_stock basado en stock_count.
-        
-        - stock_count > 0  →  in_stock = True
-        - stock_count == 0 →  in_stock = False
+        Calcula automáticamente in_stock y valida precios.
         """
         self.in_stock = self.stock_count > 0
+        self.full_clean()  # Ejecuta validaciones
         super().save(*args, **kwargs)
 
     @property
-    def stock_status(self):
+    def current_price(self) -> Decimal:
+        """
+        Devuelve el precio actual (oferta si existe, sino el regular).
+        
+        Returns:
+            Decimal: El precio de oferta si existe, o el precio regular.
+        """
+        if self.discount_price is not None:
+            return self.discount_price
+        return self.price
+
+    @property
+    def has_discount(self) -> bool:
+        """Indica si el producto tiene descuento activo."""
+        return self.discount_price is not None
+
+    @property
+    def discount_percentage(self) -> int:
+        """
+        Calcula el porcentaje de descuento.
+        
+        Returns:
+            int: Porcentaje de descuento (0-100), o 0 si no hay descuento.
+        """
+        if self.discount_price is not None and self.price > 0:
+            discount = ((self.price - self.discount_price) / self.price) * 100
+            return int(discount)
+        return 0
+
+    @property
+    def stock_status(self) -> str:
         """
         Devuelve el estado de stock para mostrar en el frontend.
         

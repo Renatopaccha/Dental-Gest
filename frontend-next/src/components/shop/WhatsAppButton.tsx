@@ -1,22 +1,29 @@
 "use client";
 
-import Link from "next/link";
-import { Product } from "@/lib/data";
+import Image from "next/image";
 
 // Replace with actual number
 const PHONE_NUMBER = "593999999999";
 
-interface WhatsAppButtonProps {
-    product: Product;
+export interface WhatsAppButtonProps {
+    productName: string;
+    inStock: boolean;
 }
 
-export function WhatsAppButton({ product }: WhatsAppButtonProps) {
-    const message = `Hola, estoy interesado en ${product.name}`;
+/**
+ * Botón de WhatsApp para consultar sobre un producto.
+ * Genera un mensaje dinámico con el nombre del producto.
+ */
+export function WhatsAppButton({ productName, inStock }: WhatsAppButtonProps) {
+    const message = `Hola, estoy interesado en ${productName}`;
     const whatsappUrl = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
 
-    if (!product.inStock || product.stockCount === 0) {
+    if (!inStock) {
         return (
-            <button disabled className="w-full bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2">
+            <button
+                disabled
+                className="w-full bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2"
+            >
                 <span>Agotado</span>
                 <span className="material-icons-outlined">block</span>
             </button>
@@ -30,7 +37,13 @@ export function WhatsAppButton({ product }: WhatsAppButtonProps) {
             rel="noopener noreferrer"
             className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-green-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2"
         >
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-6 h-6 filter brightness-0 invert" alt="WhatsApp" />
+            <Image
+                src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                width={24}
+                height={24}
+                className="filter brightness-0 invert"
+                alt="WhatsApp"
+            />
             <span>Consultar por WhatsApp</span>
         </a>
     );

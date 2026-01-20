@@ -4,7 +4,6 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/home/HeroSection";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { products } from "@/lib/data";
 
 export default function Home() {
   return (
@@ -50,7 +49,7 @@ export default function Home() {
           </div>
         </section>
 
-        <FeaturedProducts products={products} />
+        <FeaturedProducts />
 
         <section className="py-12 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

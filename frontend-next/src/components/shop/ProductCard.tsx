@@ -1,57 +1,128 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
-import { Product } from "@/lib/data";
+import { ProductDisplay } from "@/types/product";
+
+// Imagen placeholder cuando no hay imagen del producto
+const PLACEHOLDER_IMAGE = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png";
 
 interface ProductCardProps {
-    product: Product;
+    product: ProductDisplay;
 }
 
+/**
+ * Tarjeta de producto con soporte para:
+ * - Precios con descuento (precio tachado + precio de oferta)
+ * - Etiqueta de porcentaje de descuento
+ * - Estados de stock dinámicos
+ * - Imágenes desde Django o placeholder
+ */
 export function ProductCard({ product }: ProductCardProps) {
-    const isOutOfStock = !product.inStock || product.stockCount === 0;
-    const isLowStock = product.stockCount > 0 && product.stockCount < 5;
+    const {
+        id,
+        name,
+        price,
+        discountPrice,
+        currentPrice,
+        hasDiscount,
+        discountPercentage,
+        categoryName,
+        stockCount,
+        inStock,
+        stockStatus,
+        imageUrl,
+    } = product;
 
-    let statusLabel = "En Stock";
-    let statusColor = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+    // Determinar color y texto del estado de stock
+    const getStockStyle = () => {
+        if (stockCount === 0) {
+            return { bg: "bg-red-100 dark:bg-red-900/30", text: "text-red-600 dark:text-red-400" };
+        }
+        if (stockCount < 5) {
+            return { bg: "bg-yellow-100 dark:bg-yellow-900/30", text: "text-yellow-600 dark:text-yellow-400" };
+        }
+        return { bg: "bg-green-100 dark:bg-green-900/30", text: "text-green-600 dark:text-green-400" };
+    };
 
-    if (isOutOfStock) {
-        statusLabel = "Agotado";
-        statusColor = "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400";
-    } else if (isLowStock) {
-        statusLabel = "Poco Stock";
-        statusColor = "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
-    }
+    const stockStyle = getStockStyle();
 
     return (
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition group flex flex-col h-full">
-            <div className="relative h-56 bg-white p-4 flex items-center justify-center">
-                <span className={`absolute top-3 left-3 ${statusColor} text-xs font-bold px-2 py-1 rounded`}>
-                    {statusLabel.toUpperCase()}
-                </span>
+        <div className="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-100 dark:border-slate-700">
+            {/* Imagen del producto */}
+            <Link href={`/producto/${id}`} className="block relative h-48 overflow-hidden">
                 <Image
-                    alt={product.name}
-                    className={`object-contain p-4 transition duration-300 ${isOutOfStock ? 'opacity-50 grayscale' : 'group-hover:scale-105'}`}
-                    src={product.image}
+                    src={imageUrl || PLACEHOLDER_IMAGE}
+                    alt={name}
                     fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-            </div>
-            <div className="p-5 flex-1 flex flex-col">
-                <div className="text-xs text-slate-500 mb-1">{product.category}</div>
-                <Link href={`/producto/${product.id}`}>
-                    <h3 className="font-bold text-slate-900 dark:text-white mb-2 truncate hover:text-primary transition">
-                        {product.name}
+
+                {/* Badge de descuento */}
+                {hasDiscount && (
+                    <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow">
+                        -{discountPercentage}%
+                    </div>
+                )}
+
+                {/* Badge de estado de stock */}
+                <div className={`absolute top-2 right-2 ${stockStyle.bg} ${stockStyle.text} text-xs font-semibold px-2 py-1 rounded-md`}>
+                    {stockStatus.toUpperCase()}
+                </div>
+            </Link>
+
+            {/* Información del producto */}
+            <div className="p-4">
+                {/* Categoría */}
+                <span className="text-xs text-primary font-medium uppercase tracking-wide">
+                    {categoryName}
+                </span>
+
+                {/* Nombre */}
+                <Link href={`/producto/${id}`}>
+                    <h3 className="font-semibold text-slate-800 dark:text-white mt-1 line-clamp-2 group-hover:text-primary transition-colors">
+                        {name}
                     </h3>
                 </Link>
-                <div className="mt-auto flex items-center justify-between">
-                    <span className="text-lg font-bold text-primary">${product.price.toFixed(2)}</span>
-                    {isOutOfStock ? (
-                        <button disabled className="bg-gray-100 text-gray-400 p-2 rounded-full cursor-not-allowed">
-                            <span className="material-icons-outlined text-sm">block</span>
-                        </button>
+
+                {/* Precios */}
+                <div className="mt-2 flex items-baseline gap-2">
+                    {hasDiscount ? (
+                        <>
+                            {/* Precio actual (con descuento) */}
+                            <span className="text-xl font-bold text-primary">
+                                ${currentPrice.toFixed(2)}
+                            </span>
+                            {/* Precio original tachado */}
+                            <span className="text-sm text-slate-400 line-through">
+                                ${price.toFixed(2)}
+                            </span>
+                        </>
                     ) : (
-                        <Link href={`/producto/${product.id}`} className="bg-primary/10 hover:bg-primary text-primary hover:text-white p-2 rounded-full transition">
-                            <span className="material-icons-outlined text-sm">add_shopping_cart</span>
+                        /* Precio normal sin descuento */
+                        <span className="text-xl font-bold text-slate-800 dark:text-white">
+                            ${price.toFixed(2)}
+                        </span>
+                    )}
+                </div>
+
+                {/* Botón de acción */}
+                <div className="mt-4">
+                    {inStock ? (
+                        <Link
+                            href={`/producto/${id}`}
+                            className="block w-full text-center py-2 px-4 bg-primary hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                        >
+                            Ver Producto
                         </Link>
+                    ) : (
+                        <button
+                            disabled
+                            className="block w-full text-center py-2 px-4 bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 font-medium rounded-lg cursor-not-allowed"
+                        >
+                            Agotado
+                        </button>
                     )}
                 </div>
             </div>
