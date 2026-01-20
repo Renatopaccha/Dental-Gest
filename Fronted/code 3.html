@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dental GEST_EC - Catálogo de Productos para Estudiantes</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2563EB", // Vibrant Royal Blue based on the logo
+                        secondary: "#0EA5E9", // Lighter Cyan/Blue based on the logo accent
+                        "background-light": "#F3F4F6", // Light Gray
+                        "background-dark": "#111827", // Dark Gray/Black
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1F2937",
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+<style>.custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #CBD5E1;
+            border-radius: 20px;
+        }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #4B5563;
+        }html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-100 font-sans antialiased transition-colors duration-300">
+<nav class="sticky top-0 z-50 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-20 items-center">
+<div class="flex items-center gap-3">
+<div class="relative w-10 h-10 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 rounded-full">
+<span class="material-icons-round text-primary text-3xl">medical_services</span>
+</div>
+<div class="flex flex-col leading-none">
+<span class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Dental</span>
+<span class="text-xl font-bold text-primary tracking-tight">GEST_EC</span>
+</div>
+</div>
+<div class="hidden md:flex space-x-8 items-center">
+<a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium transition" href="#">Inicio</a>
+<a class="text-primary font-semibold border-b-2 border-primary pb-1" href="#">Catálogo</a>
+<a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium transition" href="#">Universidades</a>
+<a class="text-gray-600 dark:text-gray-300 hover:text-primary dark:hover:text-primary font-medium transition" href="#">Contacto</a>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white transition rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+<span class="material-icons-round">search</span>
+</button>
+<button class="relative p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white transition rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+<span class="material-icons-round">shopping_cart</span>
+<span class="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+</button>
+<button class="p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-white transition rounded-full hover:bg-gray-100 dark:hover:bg-gray-700" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-icons-round dark:hidden">dark_mode</span>
+<span class="material-icons-round hidden dark:block">light_mode</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary p-[2px] cursor-pointer">
+<img alt="User" class="rounded-full bg-white dark:bg-gray-800 h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy-PYFEtfS9QG-HpxOKP6yBp4nbur4WmgIiQE_-xIO7BX6mAY438Svo5j-PcTlQn0wg_IaV_hhi-O30HYxhaLHT2hDYX05JQ6NqEmxRzZL1pODmmu4e4Lt7HVfO4CGwUN18kaYbni_F0HUIH4Q3Ifh0lvbmI4wZZLU97Kim-V-R3p598hPH9MvBwE4pFq4iwTYPvWE6eh9bQ8YP9YdTajV0nULQE8QNa53l5HbKRkLw5Bni4diCp37-yA8fVeB1m9QBohvZ3SDgOA"/>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<header class="bg-surface-light dark:bg-surface-dark border-b border-gray-200 dark:border-gray-700 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<nav aria-label="Breadcrumb" class="flex text-sm text-gray-500 dark:text-gray-400 mb-2">
+<ol class="inline-flex items-center space-x-1 md:space-x-3">
+<li class="inline-flex items-center">
+<a class="hover:text-primary transition" href="#">Inicio</a>
+</li>
+<li>
+<div class="flex items-center">
+<span class="material-icons-round text-base mx-1">chevron_right</span>
+<a class="hover:text-primary transition" href="#">Productos</a>
+</div>
+</li>
+<li aria-current="page">
+<div class="flex items-center">
+<span class="material-icons-round text-base mx-1">chevron_right</span>
+<span class="text-gray-800 dark:text-gray-200 font-medium">Estudiantes de Odontología</span>
+</div>
+</li>
+</ol>
+</nav>
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white">Esenciales para Estudiantes</h1>
+<p class="mt-2 text-gray-600 dark:text-gray-400 max-w-2xl">
+                        Equipos de grado profesional seleccionados específicamente para estudiantes de odontología. Kits aprobados para los principales currículos universitarios.
+                    </p>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-sm font-medium text-gray-500 dark:text-gray-400">Ordenar por:</span>
+<select class="form-select text-sm rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:border-primary focus:ring-primary shadow-sm">
+<option>Más populares</option>
+<option>Precio: Menor a Mayor</option>
+<option>Precio: Mayor a Menor</option>
+<option>Nuevos Lanzamientos</option>
+</select>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col lg:flex-row gap-8">
+<aside class="w-full lg:w-64 flex-shrink-0">
+<div class="lg:sticky lg:top-24 space-y-8">
+<div class="relative">
+<input class="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-surface-dark text-gray-900 dark:text-white placeholder-gray-400 focus:ring-primary focus:border-primary pl-10 shadow-sm" placeholder="Buscar productos..." type="text"/>
+<span class="material-icons-round absolute left-3 top-2.5 text-gray-400">search</span>
+</div>
+<div>
+<h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">CATEGORÍAS</h3>
+<div class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-2">
+<label class="flex items-center">
+<input checked="" class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">Kits de Diagnóstico Básico</span>
+</label>
+<label class="flex items-center">
+<input class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">Tipodontos y Modelos</span>
+</label>
+<label class="flex items-center">
+<input class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">Instrumentos Rotatorios</span>
+</label>
+<label class="flex items-center">
+<input class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">Endodoncia</span>
+</label>
+<label class="flex items-center">
+<input class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">Uniformes de Laboratorio</span>
+</label>
+</div>
+</div>
+<div>
+<h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">RANGO DE PRECIO</h3>
+<div class="flex items-center gap-2 mb-2">
+<div class="relative w-full">
+<span class="absolute left-3 top-2 text-gray-500 text-xs">$</span>
+<input class="w-full pl-6 py-1 text-sm rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary" placeholder="Min" type="number"/>
+</div>
+<span class="text-gray-500">-</span>
+<div class="relative w-full">
+<span class="absolute left-3 top-2 text-gray-500 text-xs">$</span>
+<input class="w-full pl-6 py-1 text-sm rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary" placeholder="Max" type="number"/>
+</div>
+</div>
+<input class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 accent-primary" max="1000" min="0" type="range"/>
+</div>
+<div>
+<h3 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">MARCAS</h3>
+<div class="space-y-2">
+<label class="flex items-center">
+<input class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">Hu-Friedy</span>
+</label>
+<label class="flex items-center">
+<input checked="" class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">Esenciales GEST_EC</span>
+</label>
+<label class="flex items-center">
+<input class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">NSK</span>
+</label>
+<label class="flex items-center">
+<input class="form-checkbox h-4 w-4 text-primary rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-primary" type="checkbox"/>
+<span class="ml-2 text-gray-700 dark:text-gray-300 text-sm">3M Oral Care</span>
+</label>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative h-56 bg-white flex items-center justify-center p-4">
+<span class="absolute top-3 left-3 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full dark:bg-green-900/30 dark:text-green-400">En Stock</span>
+<button class="absolute top-3 right-3 p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition opacity-0 group-hover:opacity-100">
+<span class="material-icons-round text-sm">favorite</span>
+</button>
+<img alt="Dental Surgical Kit" class="h-full object-contain group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSivMYUSPGCHGr4iojPMws7ud_bnPAnchv-bhNFrLO_8tqmmAis776TsX_Rom6nGWGQDFgZuJJhCSs3IMc659yfqKAI5kjBHbhGmtYHDRYIHGkszYq9N2-BjnSuKeL8lQ6iz-YXD8UXuTuj0gG78Trp9REB4f3g5aNc5G5_KSjS51zR6HvJKwdyXXwoYVmfOx4N-flup6uTFs6En5ZdXO5YXnPtSRV8tHwsL93fFklPGhbRg4dFwkk6bp4SEVURvfXx0Ky0lInOio"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Kit Quirúrgico Completo</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Set quirúrgico de acero inoxidable estándar para estudiantes de primer año.</p>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="text-xs text-gray-400 dark:text-gray-500 line-through">$145.00</span>
+<div class="text-xl font-bold text-gray-900 dark:text-white">$120.00</div>
+</div>
+<button class="bg-primary hover:bg-blue-700 text-white p-2.5 rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95">
+<span class="material-icons-round text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative h-56 bg-white flex items-center justify-center p-4">
+<span class="absolute top-3 left-3 bg-yellow-100 text-yellow-700 text-xs font-semibold px-2.5 py-0.5 rounded-full dark:bg-yellow-900/30 dark:text-yellow-400">Poco Stock</span>
+<img alt="Typodont Model" class="h-full object-contain group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfODsmkSUNEhUvHd3CJIvw_X0CjA9aijPNcusT7F1KHa2SdbDrmh2Zh-0ZvRZXwo2q6oq03M_jHHak0v9H57ywY9i70xbfAqAYrcpnlS3QhkdxCb4kj1QTlrSDp7dZAgbIEMXVyYX1TUfuRwRxyrKEio2lGF2jYr-3s_bPJzxCvbjQl8Ryrcl1wIoxUySUJmEHy-7Z9_j9KTAAZcwBqbYeA17vkWpMbEy2gVlMFsBjIZLfCQsWAvcCS-gNtgxhumYJN0i8AfvWDLI"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Modelo de Tipodonto Adulto</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Modelo de mandíbula articulada con dientes removibles para prácticas restaurativas.</p>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<div class="text-xl font-bold text-gray-900 dark:text-white">$85.00</div>
+</div>
+<button class="bg-primary hover:bg-blue-700 text-white p-2.5 rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95">
+<span class="material-icons-round text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative h-56 bg-white flex items-center justify-center p-4">
+<span class="absolute top-3 left-3 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full dark:bg-green-900/30 dark:text-green-400">En Stock</span>
+<img alt="Explorer Probe" class="h-full object-contain group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbfrKVzangI06QaFjEroFKZA4xLRzC0uuTh58EVUIYRhEbnEAiAvXt3w_OZf9dU94z2YKPj7VKGgQMpen7F6B1f-RDi8PeNF1Hxwi1MqmsYLgTNzwc_fw4jqUGBMVgbECwFWCiU59XJvKbQ9fnlOxXzz32xkTFrcROv1V41-twzdrTKMDJhesvEe_SHo90C0eZ-JO062eHexPrBsOzILOx7xJIMscLt5-8aMJD8CsVohM8XQJvqIUTM-Jc63QjhsI5EcbKd5SJ25g"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Set de Sondas de Diagnóstico</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Explorador de doble extremo de alta precisión y sonda periodontal.</p>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<div class="text-xl font-bold text-gray-900 dark:text-white">$25.50</div>
+</div>
+<button class="bg-primary hover:bg-blue-700 text-white p-2.5 rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95">
+<span class="material-icons-round text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative h-56 bg-white flex items-center justify-center p-4">
+<span class="absolute top-3 left-3 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full dark:bg-green-900/30 dark:text-green-400">En Stock</span>
+<img alt="Lab Coat" class="h-full object-contain group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_ZQvoiQyHU8M7ZAOPnGh4T650BA-Vr1OmRQoRlsEzuB3GuYLLTvy_mAJt_91FZaBQi8iWDhaCjCSNztQ433CGZtpQddIh8yz08O6HiWVGmTcxt48iGHFtXRrpppkpHb5QvRpRdeK1ZoIqpFabX0mMojph_KEVtmwWhsO-N8VjPYjQxAG4gHGAClvML8x4xwuig3kHgTKUNue-b0fhk58T5pkiwgho1uBA4aWjdGdoKTo6uqeF2CPdNLCNkYl31cOeyXdwQQHakIc"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Mandil de Laboratorio</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Blanco, tela antimicrobiana. Disponible en XS-XXL.</p>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<div class="text-xl font-bold text-gray-900 dark:text-white">$35.00</div>
+</div>
+<button class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:hover:bg-gray-700 text-sm px-4 py-2.5 rounded-lg font-medium transition-all">
+                                    Ver Opciones
+                                </button>
+</div>
+</div>
+</div>
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col">
+<div class="relative h-56 bg-white flex items-center justify-center p-4">
+<span class="absolute top-3 left-3 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-0.5 rounded-full dark:bg-green-900/30 dark:text-green-400">En Stock</span>
+<img alt="Forceps" class="h-full object-contain group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQVmjg2cBeWahrEbhumtTEnbDWkEZZG9FT6lXRq2rqQumey6bZ_HEvGlvlRkJR4vsHlD5OtFpnEMV_BDnd2BWK-mpKuJouO7IVIwcjameBoBdOXBFI18dDoyu6i-1rQDlsQfnZS9NkVYMqzVN8RfZSeu9LZ1fUJnSP7qvr3RU7I_Qxs7_OcpfJORsTMvTskWf26KRayCorClk206r65NYPaFlgmEEJE9mHCdo0rMamXlSkgA8XGpdCJmEViMdPplCWLVYWxqrtuQc"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Set de Fórceps de Extracción</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Fórceps universales superiores e inferiores. Agarre ergonómico.</p>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<div class="text-xl font-bold text-gray-900 dark:text-white">$190.00</div>
+</div>
+<button class="bg-primary hover:bg-blue-700 text-white p-2.5 rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95">
+<span class="material-icons-round text-xl">add_shopping_cart</span>
+</button>
+</div>
+</div>
+</div>
+<div class="group bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-gray-900/50 hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-300 overflow-hidden flex flex-col opacity-75">
+<div class="relative h-56 bg-white flex items-center justify-center p-4 grayscale group-hover:grayscale-0 transition-all duration-300">
+<span class="absolute top-3 left-3 bg-gray-100 text-gray-600 text-xs font-semibold px-2.5 py-0.5 rounded-full dark:bg-gray-700 dark:text-gray-300">Agotado</span>
+<img alt="Curing Light" class="h-full object-contain group-hover:scale-105 transition-transform duration-300" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7GafTnAFwDouENvZ_JM-Kt_OjBTWcozEGaOeA4zzK7SqalhUcv5znlIqk9bpDeVmszCOfaVjVgV5BCKmoJaj72ksU0GuV69ooSBQKYTippnzV15eqCXN-SpzR2Je66pdJe6TLVX3NbG30E7_bkel3_iaML_pnJnRyM-rCQxOyYHcTQrDr0XNiYxSVc-O-kvSlG_JQahFOCbYTX3KIA5ZWgQVtF05N-w3Avi0_qSKujpOgmw8W96yAYXUjyH-ThPVIdE5TXFv25WI"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1 group-hover:text-primary transition-colors">Lámpara de Fotocurado LED</h3>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">Lámpara de fotocurado LED inalámbrica de alta potencia para composites.</p>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<div class="text-xl font-bold text-gray-900 dark:text-white">$45.00</div>
+</div>
+<button class="bg-gray-300 text-gray-500 cursor-not-allowed p-2.5 rounded-lg dark:bg-gray-700 dark:text-gray-400" disabled="">
+<span class="material-icons-round text-xl">notifications</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-12 flex justify-center">
+<nav class="flex items-center space-x-2">
+<button class="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+<span class="material-icons-round">chevron_left</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-primary text-white font-medium">1</button>
+<button class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">2</button>
+<button class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">3</button>
+<span class="text-gray-400">...</span>
+<button class="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition">8</button>
+<button class="p-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-surface-dark text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+<span class="material-icons-round">chevron_right</span>
+</button>
+</nav>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-white dark:bg-surface-dark border-t border-gray-200 dark:border-gray-700 mt-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-4">
+<div class="relative w-8 h-8 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 rounded-full">
+<span class="material-icons-round text-primary text-xl">medical_services</span>
+</div>
+<span class="text-lg font-bold text-gray-900 dark:text-white">Dental GEST_EC</span>
+</div>
+<p class="text-sm text-gray-500 dark:text-gray-400">
+                        Equipando a la próxima generación de profesionales de la odontología con herramientas y suministros de calidad.
+                    </p>
+</div>
+<div>
+<h4 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">TIENDA</h4>
+<ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+<li><a class="hover:text-primary transition" href="#">Kits Estudiantiles</a></li>
+<li><a class="hover:text-primary transition" href="#">Instrumentos</a></li>
+<li><a class="hover:text-primary transition" href="#">Modelos</a></li>
+<li><a class="hover:text-primary transition" href="#">Uniformes</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">SOPORTE</h4>
+<ul class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+<li><a class="hover:text-primary transition" href="#">Programa Universitario</a></li>
+<li><a class="hover:text-primary transition" href="#">Envíos y Devoluciones</a></li>
+<li><a class="hover:text-primary transition" href="#">Preguntas Frecuentes</a></li>
+<li><a class="hover:text-primary transition" href="#">Contáctanos</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-4">BOLETÍN INFORMATIVO</h4>
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Suscríbete para descuentos estudiantiles</p>
+<div class="flex gap-2">
+<input class="w-full text-sm rounded-lg border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-primary focus:border-primary" placeholder="Correo electrónico" type="email"/>
+<button class="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">Ir</button>
+</div>
+</div>
+</div>
+<div class="border-t border-gray-200 dark:border-gray-700 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+<p>© 2023 Dental GEST_EC. Todos los derechos reservados.</p>
+<div class="flex space-x-4 mt-4 md:mt-0">
+<a class="hover:text-gray-900 dark:hover:text-white" href="#">Política de Privacidad</a>
+<a class="hover:text-gray-900 dark:hover:text-white" href="#">Términos de Servicio</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
