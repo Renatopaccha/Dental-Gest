@@ -95,7 +95,7 @@ export function toProductDisplay(product: Product): ProductDisplay {
         stockCount: product.stock_count,
         inStock: product.in_stock,
         stockStatus: product.stock_status,
-        imageUrl: product.image_url,
+        imageUrl: product.image,
         images: product.images || [],
     };
 }
@@ -109,8 +109,8 @@ export function getDisplayImage(product: ProductDisplay): string {
         return product.imageUrl;
     }
 
-    if (product.images && product.images.length > 0 && product.images[0].image_url) {
-        return product.images[0].image_url;
+    if (product.images && product.images.length > 0 && product.images[0].image) {
+        return product.images[0].image;
     }
 
     return '/file.svg';

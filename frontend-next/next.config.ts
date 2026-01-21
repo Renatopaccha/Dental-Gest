@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Skip image optimization for development (allows local backend images)
+    unoptimized: true,
     remotePatterns: [
       // Django backend - desarrollo local
       {
