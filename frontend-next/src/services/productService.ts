@@ -7,20 +7,8 @@ import { Product, Category, PaginatedResponse, ProductDisplay, toProductDisplay 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 /**
- * Maneja errores de la API de forma controlada
- */
-async function handleResponse<T>(response: Response): Promise<T> {
-    if (!response.ok) {
-        throw new Error(`API Error: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
-}
-
-/**
  * Obtiene todos los productos de la API
- * 
- * @param options - Opciones de filtrado
- * @returns Lista de productos o array vacío si hay error
+ * Maneja tanto respuestas paginadas como arrays directos
  */
 export async function getProducts(options?: {
     category?: number;
@@ -48,32 +36,49 @@ export async function getProducts(options?: {
         const url = `${API_URL}/products/${queryString ? `?${queryString}` : ''}`;
 
         const response = await fetch(url, {
-            next: { revalidate: 60 }, // Cache por 60 segundos (ISR)
+            cache: 'no-store', // Siempre obtener datos frescos
         });
 
-        const data = await handleResponse<PaginatedResponse<Product>>(response);
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // CORRECCIÓN: Manejo inteligente de paginación
+        let products: Product[] = [];
+
+        // Si Django envía paginación ({ results: [...] }), extraemos results
+        if (data.results && Array.isArray(data.results)) {
+            products = data.results;
+        }
+        // Si envía un array directo, usamos el array
+        else if (Array.isArray(data)) {
+            products = data;
+        }
 
         // Convertir a formato de display
-        return data.results.map(toProductDisplay);
+        return products.map(toProductDisplay);
     } catch (error) {
         console.error('Error fetching products:', error);
-        return []; // Retorna array vacío si la API está caída
+        return [];
     }
 }
 
 /**
  * Obtiene un producto por su ID
- * 
- * @param id - ID del producto
- * @returns Producto o null si no existe
  */
 export async function getProductById(id: number): Promise<ProductDisplay | null> {
     try {
         const response = await fetch(`${API_URL}/products/${id}/`, {
-            next: { revalidate: 60 },
+            cache: 'no-store',
         });
 
-        const data = await handleResponse<Product>(response);
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const data: Product = await response.json();
         return toProductDisplay(data);
     } catch (error) {
         console.error(`Error fetching product ${id}:`, error);
@@ -83,16 +88,28 @@ export async function getProductById(id: number): Promise<ProductDisplay | null>
 
 /**
  * Obtiene todas las categorías
- * 
- * @returns Lista de categorías
  */
 export async function getCategories(): Promise<Category[]> {
     try {
         const response = await fetch(`${API_URL}/categories/`, {
-            next: { revalidate: 300 }, // Cache por 5 minutos
+            cache: 'no-store',
         });
 
-        return await handleResponse<Category[]>(response);
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Manejar paginación para categorías también
+        if (data.results && Array.isArray(data.results)) {
+            return data.results;
+        }
+        if (Array.isArray(data)) {
+            return data;
+        }
+
+        return [];
     } catch (error) {
         console.error('Error fetching categories:', error);
         return [];

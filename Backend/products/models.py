@@ -6,10 +6,34 @@ Incluye:
 - Product: Productos con lógica de stock y precios de oferta
 - ProductImage: Imágenes adicionales para galería
 """
+import os
+from uuid import uuid4
 from decimal import Decimal
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
+
+
+def path_and_rename(instance, filename):
+    """
+    Genera un nombre de archivo único y limpio para las imágenes.
+    Evita problemas con caracteres especiales y espacios.
+    
+    Ejemplo: imagen bonita.jpg -> a1b2c3d4e5f6.jpg
+    """
+    ext = filename.split('.')[-1].lower()
+    filename = f'{uuid4().hex}.{ext}'
+    return os.path.join('products/', filename)
+
+
+def gallery_path_and_rename(instance, filename):
+    """
+    Genera nombre único para imágenes de la galería.
+    Se guardan en una subcarpeta 'gallery'.
+    """
+    ext = filename.split('.')[-1].lower()
+    filename = f'{uuid4().hex}.{ext}'
+    return os.path.join('products/gallery/', filename)
 
 
 class Category(models.Model):
@@ -94,8 +118,9 @@ class Product(models.Model):
         verbose_name="En stock",
         help_text="Indica si hay unidades disponibles (se calcula automáticamente)"
     )
+    # Usa path_and_rename para nombres de archivo limpios
     image = models.ImageField(
-        upload_to='products/',
+        upload_to=path_and_rename,
         blank=True,
         null=True,
         verbose_name="Imagen principal",
@@ -158,8 +183,6 @@ class Product(models.Model):
 class ProductImage(models.Model):
     """
     Imágenes adicionales para la galería del producto.
-    
-    Permite subir múltiples fotos de diferentes ángulos desde el admin.
     """
     product = models.ForeignKey(
         Product,
@@ -167,10 +190,11 @@ class ProductImage(models.Model):
         related_name='images',
         verbose_name="Producto"
     )
+    # Usa gallery_path_and_rename para nombres limpios
     image = models.ImageField(
-        upload_to='products/gallery/',
+        upload_to=gallery_path_and_rename,
         verbose_name="Imagen",
-        help_text="Imagen adicional del producto (ángulo extra)"
+        help_text="Imagen adicional del producto"
     )
     order = models.PositiveIntegerField(
         default=0,
