@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Footer() {
     return (
@@ -6,11 +7,28 @@ export function Footer() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     <div className="col-span-1 md:col-span-1">
-                        <div className="flex items-center gap-2 mb-4">
-                            <svg className="h-8 w-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
-                            </svg>
-                            <span className="text-xl font-bold text-white tracking-tight font-poppins">Dental GEST_EC</span>
+                        <div className="flex items-center gap-3 mb-4">
+                            <Image
+                                src="/tooth-icon.png"
+                                alt="Dental Gest_Ec"
+                                width={40}
+                                height={40}
+                                className="drop-shadow-lg"
+                            />
+                            <div className="flex flex-col leading-tight">
+                                <span className="text-[9px] text-slate-500 font-medium tracking-[0.2em] uppercase">
+                                    Dental
+                                </span>
+                                <span className="text-lg font-bold tracking-tight">
+                                    <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                                        Gest
+                                    </span>
+                                    <span className="text-slate-500">_</span>
+                                    <span className="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">
+                                        Ec
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                         <p className="text-sm text-slate-400 mb-6">
                             Tu socio de confianza para suministros dentales, empoderando a estudiantes y profesionales con las mejores herramientas de la industria.

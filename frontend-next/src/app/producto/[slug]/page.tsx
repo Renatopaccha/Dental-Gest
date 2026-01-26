@@ -5,6 +5,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { WhatsAppButton } from "@/components/shop/WhatsAppButton";
+import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { getProductById, getProducts } from "@/services/productService";
 
 // Imagen placeholder
@@ -129,11 +130,17 @@ export default async function ProductoPage({ params }: ProductPageProps) {
                                 {product.description}
                             </p>
 
-                            {/* WhatsApp Button */}
-                            <WhatsAppButton
-                                productName={product.name}
-                                inStock={product.inStock}
-                            />
+                            {/* Botones de acción */}
+                            <div className="space-y-3">
+                                <AddToCartButton
+                                    product={product}
+                                    disabled={!product.inStock}
+                                />
+                                <WhatsAppButton
+                                    productName={product.name}
+                                    inStock={product.inStock}
+                                />
+                            </div>
 
                             {/* Características */}
                             <div className="grid grid-cols-2 gap-4 pt-6 border-t border-slate-200 dark:border-slate-700">

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/context/CartContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -31,8 +32,11 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
       </head>
       <body className={`${inter.variable} ${poppins.variable} antialiased font-sans`}>
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );
 }
+

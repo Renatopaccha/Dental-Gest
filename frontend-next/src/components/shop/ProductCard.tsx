@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { ProductDisplay, getDisplayImage } from "@/types/product";
+import { useCart } from "@/context/CartContext";
 
 interface ProductCardProps {
     product: ProductDisplay;
@@ -14,6 +16,7 @@ interface ProductCardProps {
  * - Etiqueta de porcentaje de descuento
  * - Estados de stock dinámicos
  * - Lógica de fallback para imágenes (principal → galería → placeholder)
+ * - Botón de añadir al carrito
  */
 export function ProductCard({ product }: ProductCardProps) {
     const {
@@ -28,6 +31,9 @@ export function ProductCard({ product }: ProductCardProps) {
         inStock,
         stockStatus,
     } = product;
+
+    const { addToCart } = useCart();
+    const [isAdding, setIsAdding] = useState(false);
 
     // Obtener imagen a mostrar (con fallback automático)
     const displayImage = getDisplayImage(product);
@@ -47,6 +53,18 @@ export function ProductCard({ product }: ProductCardProps) {
 
     // Verificar si es una imagen local (placeholder)
     const isLocalImage = displayImage.startsWith('/');
+
+    // Manejar añadir al carrito con animación
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setIsAdding(true);
+        addToCart(product);
+
+        // Resetear animación después de 600ms
+        setTimeout(() => setIsAdding(false), 600);
+    };
 
     return (
         <div className="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-100 dark:border-slate-700">
@@ -130,19 +148,31 @@ export function ProductCard({ product }: ProductCardProps) {
                     )}
                 </div>
 
-                {/* Botón de acción */}
-                <div className="mt-4">
+                {/* Botones de acción */}
+                <div className="mt-4 flex gap-2">
                     {inStock ? (
-                        <Link
-                            href={`/producto/${id}`}
-                            className="block w-full text-center py-2 px-4 bg-primary hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
-                        >
-                            Ver Producto
-                        </Link>
+                        <>
+                            <Link
+                                href={`/producto/${id}`}
+                                className="flex-1 text-center py-2 px-3 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-medium rounded-lg transition-colors text-sm"
+                            >
+                                Ver más
+                            </Link>
+                            <button
+                                onClick={handleAddToCart}
+                                className={`flex-1 py-2 px-3 bg-primary hover:bg-blue-700 text-white font-medium rounded-lg transition-all text-sm flex items-center justify-center gap-1 ${isAdding ? 'scale-95 bg-green-500' : ''
+                                    }`}
+                            >
+                                <span className={`material-icons-outlined text-lg ${isAdding ? 'animate-bounce' : ''}`}>
+                                    {isAdding ? 'check' : 'add_shopping_cart'}
+                                </span>
+                                <span className="hidden sm:inline">{isAdding ? '¡Añadido!' : 'Añadir'}</span>
+                            </button>
+                        </>
                     ) : (
                         <button
                             disabled
-                            className="block w-full text-center py-2 px-4 bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 font-medium rounded-lg cursor-not-allowed"
+                            className="w-full text-center py-2 px-4 bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 font-medium rounded-lg cursor-not-allowed"
                         >
                             Agotado
                         </button>
@@ -152,3 +182,4 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
     );
 }
+
