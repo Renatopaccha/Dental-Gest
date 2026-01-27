@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, ProductImage
+from .models import Category, Product, ProductImage, Brand
 
 class CategorySerializer(serializers.ModelSerializer):
     product_count = serializers.SerializerMethodField()
@@ -10,6 +10,24 @@ class CategorySerializer(serializers.ModelSerializer):
     
     def get_product_count(self, obj):
         return obj.products.count()
+
+
+class BrandSerializer(serializers.ModelSerializer):
+    """Serializador de marcas."""
+    product_count = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Brand
+        fields = ['id', 'name', 'slug', 'image', 'product_count']
+    
+    def get_product_count(self, obj):
+        return obj.products.count()
+    
+    def get_image(self, obj):
+        if obj.image:
+            return f"http://127.0.0.1:8000{obj.image.url}"
+        return None
 
 class ProductImageSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -27,6 +45,8 @@ class ProductSerializer(serializers.ModelSerializer):
     """Serializador de DETALLE"""
     category_name = serializers.CharField(source='category.name', read_only=True)
     category_slug = serializers.CharField(source='category.slug', read_only=True)
+    brand_name = serializers.CharField(source='brand.name', read_only=True, allow_null=True)
+    brand_slug = serializers.CharField(source='brand.slug', read_only=True, allow_null=True)
     current_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     has_discount = serializers.BooleanField(read_only=True)
     discount_percentage = serializers.IntegerField(read_only=True)
@@ -41,6 +61,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'id', 'name', 'description', 'price', 'discount_price',
             'current_price', 'has_discount', 'discount_percentage',
             'category', 'category_name', 'category_slug',
+            'brand', 'brand_name', 'brand_slug',
             'stock_count', 'in_stock', 'stock_status',
             'image', 'images', 'created_at', 'updated_at',
         ]
@@ -58,6 +79,9 @@ class ProductSerializer(serializers.ModelSerializer):
 class ProductListSerializer(serializers.ModelSerializer):
     """Serializador de CATÁLOGO"""
     category_name = serializers.CharField(source='category.name', read_only=True)
+    category_slug = serializers.CharField(source='category.slug', read_only=True)
+    brand_name = serializers.CharField(source='brand.name', read_only=True, allow_null=True)
+    brand_slug = serializers.CharField(source='brand.slug', read_only=True, allow_null=True)
     current_price = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
     has_discount = serializers.BooleanField(read_only=True)
     discount_percentage = serializers.IntegerField(read_only=True)
@@ -71,7 +95,9 @@ class ProductListSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'name', 'price', 'discount_price', 
             'current_price', 'has_discount', 'discount_percentage',
-            'category_name', 'stock_count', 'in_stock', 'stock_status',
+            'category_name', 'category_slug',
+            'brand_name', 'brand_slug',
+            'stock_count', 'in_stock', 'stock_status',
             'image', 'image_count',
         ]
     

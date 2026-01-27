@@ -14,6 +14,17 @@ export interface Category {
 }
 
 /**
+ * Marca de productos
+ */
+export interface Brand {
+    id: number;
+    name: string;
+    slug: string;
+    image: string | null;
+    product_count: number;
+}
+
+/**
  * Imagen adicional de la galería de un producto
  */
 export interface ProductImage {
@@ -38,6 +49,9 @@ export interface Product {
     category: number;
     category_name: string;
     category_slug: string;
+    brand: number | null;
+    brand_name: string | null;
+    brand_slug: string | null;
     stock_count: number;
     in_stock: boolean;
     stock_status: 'En Stock' | 'Poco Stock' | 'Agotado';
@@ -71,6 +85,9 @@ export interface ProductDisplay {
     hasDiscount: boolean;
     discountPercentage: number;
     categoryName: string;
+    categorySlug: string;
+    brandName: string | null;
+    brandSlug: string | null;
     stockCount: number;
     inStock: boolean;
     stockStatus: 'En Stock' | 'Poco Stock' | 'Agotado';
@@ -92,6 +109,9 @@ export function toProductDisplay(product: Product): ProductDisplay {
         hasDiscount: product.has_discount,
         discountPercentage: product.discount_percentage,
         categoryName: product.category_name,
+        categorySlug: product.category_slug,
+        brandName: product.brand_name,
+        brandSlug: product.brand_slug,
         stockCount: product.stock_count,
         inStock: product.in_stock,
         stockStatus: product.stock_status,

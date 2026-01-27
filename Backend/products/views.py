@@ -5,8 +5,8 @@ Proporciona endpoints de solo lectura para el catálogo público.
 """
 from rest_framework import viewsets, filters
 from rest_framework.permissions import AllowAny
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
+from .models import Category, Product, Brand
+from .serializers import CategorySerializer, ProductSerializer, BrandSerializer
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
@@ -15,12 +15,26 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     
     Endpoints:
         GET /api/categories/        - Lista todas las categorías
-        GET /api/categories/{id}/   - Detalle de una categoría
+        GET /api/categories/{slug}/ - Detalle de una categoría
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
     lookup_field = 'slug'  # Permite buscar por slug en lugar de ID
+
+
+class BrandViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint para listar marcas.
+    
+    Endpoints:
+        GET /api/brands/        - Lista todas las marcas
+        GET /api/brands/{slug}/ - Detalle de una marca
+    """
+    queryset = Brand.objects.all()
+    serializer_class = BrandSerializer
+    permission_classes = [AllowAny]
+    lookup_field = 'slug'
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
@@ -32,12 +46,18 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         GET /api/products/{id}/     - Detalle de un producto
     
     Filtros disponibles:
-        - ?category={id}            - Filtrar por categoría
+        - ?category={slug o id}     - Filtrar por categoría
+        - ?brand={slug o id}        - Filtrar por marca
+        - ?min_price={número}       - Precio mínimo
+        - ?max_price={número}       - Precio máximo
         - ?in_stock=true            - Solo productos en stock
         - ?search={texto}           - Buscar en nombre y descripción
         - ?ordering=price           - Ordenar por precio (use -price para descendente)
+    
+    Nota: Si no se envía ningún filtro de categoría, devuelve TODOS los productos
+    (lógica "Todo el catálogo" automática).
     """
-    queryset = Product.objects.select_related('category').all()
+    queryset = Product.objects.select_related('category', 'brand').all()
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
     
@@ -54,16 +74,42 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Filtra productos según query parameters.
         
-        Ejemplos:
-            /api/products/?category=1
-            /api/products/?in_stock=true
+        Filtros acumulativos - se pueden combinar:
+            /api/products/?category=resinas&brand=3m&min_price=10&max_price=50
         """
         queryset = super().get_queryset()
         
-        # Filtrar por categoría
-        category_id = self.request.query_params.get('category')
-        if category_id:
-            queryset = queryset.filter(category_id=category_id)
+        # Filtrar por categoría (slug o id)
+        category = self.request.query_params.get('category')
+        if category:
+            if category.isdigit():
+                queryset = queryset.filter(category_id=category)
+            else:
+                queryset = queryset.filter(category__slug=category)
+        
+        # Filtrar por marca (slug o id)
+        brand = self.request.query_params.get('brand')
+        if brand:
+            if brand.isdigit():
+                queryset = queryset.filter(brand_id=brand)
+            else:
+                queryset = queryset.filter(brand__slug=brand)
+        
+        # Filtrar por rango de precio
+        min_price = self.request.query_params.get('min_price')
+        max_price = self.request.query_params.get('max_price')
+        
+        if min_price:
+            try:
+                queryset = queryset.filter(price__gte=float(min_price))
+            except ValueError:
+                pass
+        
+        if max_price:
+            try:
+                queryset = queryset.filter(price__lte=float(max_price))
+            except ValueError:
+                pass
         
         # Filtrar por stock
         in_stock = self.request.query_params.get('in_stock')

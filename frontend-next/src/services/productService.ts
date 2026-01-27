@@ -1,26 +1,43 @@
 /**
  * Servicio de API para consumir datos del backend Django
  */
-import { Product, Category, PaginatedResponse, ProductDisplay, toProductDisplay } from '@/types/product';
+import { Product, Category, Brand, PaginatedResponse, ProductDisplay, toProductDisplay } from '@/types/product';
 
 // URL base de la API Django
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
 
 /**
- * Obtiene todos los productos de la API
- * Maneja tanto respuestas paginadas como arrays directos
+ * Opciones de filtrado para productos
  */
-export async function getProducts(options?: {
-    category?: number;
+export interface GetProductsOptions {
+    category?: string;      // slug o id
+    brand?: string;         // slug o id
+    minPrice?: number;
+    maxPrice?: number;
     inStock?: boolean;
     search?: string;
     ordering?: string;
-}): Promise<ProductDisplay[]> {
+}
+
+/**
+ * Obtiene todos los productos de la API con filtros opcionales
+ * Maneja tanto respuestas paginadas como arrays directos
+ */
+export async function getProducts(options?: GetProductsOptions): Promise<ProductDisplay[]> {
     try {
         const params = new URLSearchParams();
 
         if (options?.category) {
-            params.append('category', options.category.toString());
+            params.append('category', options.category);
+        }
+        if (options?.brand) {
+            params.append('brand', options.brand);
+        }
+        if (options?.minPrice !== undefined) {
+            params.append('min_price', options.minPrice.toString());
+        }
+        if (options?.maxPrice !== undefined) {
+            params.append('max_price', options.maxPrice.toString());
         }
         if (options?.inStock !== undefined) {
             params.append('in_stock', options.inStock.toString());
@@ -117,10 +134,40 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 /**
+ * Obtiene todas las marcas
+ */
+export async function getBrands(): Promise<Brand[]> {
+    try {
+        const response = await fetch(`${API_URL}/brands/`, {
+            cache: 'no-store',
+        });
+
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Manejar paginación para marcas también
+        if (data.results && Array.isArray(data.results)) {
+            return data.results;
+        }
+        if (Array.isArray(data)) {
+            return data;
+        }
+
+        return [];
+    } catch (error) {
+        console.error('Error fetching brands:', error);
+        return [];
+    }
+}
+
+/**
  * Obtiene productos por categoría
  */
-export async function getProductsByCategory(categoryId: number): Promise<ProductDisplay[]> {
-    return getProducts({ category: categoryId });
+export async function getProductsByCategory(categorySlug: string): Promise<ProductDisplay[]> {
+    return getProducts({ category: categorySlug });
 }
 
 /**

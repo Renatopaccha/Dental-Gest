@@ -75,6 +75,54 @@ class Category(models.Model):
         super().save(*args, **kwargs)
 
 
+def brand_path_and_rename(instance, filename):
+    """Genera nombre único para logos de marca."""
+    ext = filename.split('.')[-1].lower()
+    filename = f'{uuid4().hex}.{ext}'
+    return os.path.join('brands/', filename)
+
+
+class Brand(models.Model):
+    """Marca de productos odontológicos."""
+    name = models.CharField(
+        max_length=100,
+        unique=True,
+        verbose_name="Nombre",
+        help_text="Nombre de la marca (ej: 3M, Hu-Friedy, NSK)"
+    )
+    slug = models.SlugField(
+        max_length=100,
+        unique=True,
+        blank=True,
+        verbose_name="Slug",
+        help_text="Identificador URL-friendly (se genera automáticamente)"
+    )
+    image = models.ImageField(
+        upload_to=brand_path_and_rename,
+        blank=True,
+        null=True,
+        verbose_name="Logo",
+        help_text="Logo de la marca (opcional)"
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Fecha de creación"
+    )
+
+    class Meta:
+        verbose_name = "Marca"
+        verbose_name_plural = "Marcas"
+        ordering = ['name']
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+
 class Product(models.Model):
     """Producto del catálogo de suministros odontológicos."""
     name = models.CharField(
@@ -106,6 +154,15 @@ class Product(models.Model):
         related_name='products',
         verbose_name="Categoría",
         help_text="Categoría a la que pertenece el producto"
+    )
+    brand = models.ForeignKey(
+        Brand,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products',
+        verbose_name="Marca",
+        help_text="Marca del producto (opcional)"
     )
     stock_count = models.PositiveIntegerField(
         default=0,

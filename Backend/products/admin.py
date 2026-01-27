@@ -8,7 +8,7 @@ Incluye:
 """
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Category, Product, ProductImage
+from .models import Category, Product, ProductImage, Brand
 
 
 class ProductImageInline(admin.TabularInline):
@@ -30,6 +30,54 @@ class ProductImageInline(admin.TabularInline):
             )
         return "Sin imagen"
     image_preview.short_description = "Vista previa"
+
+
+@admin.register(Brand)
+class BrandAdmin(admin.ModelAdmin):
+    """Admin para gestionar marcas de productos."""
+    list_display = ['logo_preview', 'name', 'slug', 'product_count', 'created_at']
+    list_display_links = ['logo_preview', 'name']
+    search_fields = ['name']
+    prepopulated_fields = {'slug': ('name',)}
+    readonly_fields = ['created_at', 'logo_preview_large']
+    
+    fieldsets = (
+        ('Información de la Marca', {
+            'fields': ('name', 'slug', 'image', 'logo_preview_large')
+        }),
+        ('Sistema', {
+            'classes': ('collapse',),
+            'fields': ('created_at',)
+        }),
+    )
+    
+    def logo_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" width="40" height="40" '
+                'style="object-fit: contain; border-radius: 4px; background: #f8f8f8;" />',
+                obj.image.url
+            )
+        return format_html(
+            '<div style="width: 40px; height: 40px; background: #f0f0f0; '
+            'border-radius: 4px; display: flex; align-items: center; '
+            'justify-content: center; color: #999; font-size: 10px;">—</div>'
+        )
+    logo_preview.short_description = "Logo"
+    
+    def logo_preview_large(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" width="150" style="border-radius: 8px; '
+                'background: #f8f8f8; padding: 10px;" />',
+                obj.image.url
+            )
+        return "Sin logo"
+    logo_preview_large.short_description = "Vista previa"
+    
+    def product_count(self, obj):
+        return obj.products.count()
+    product_count.short_description = "Productos"
 
 
 @admin.register(Category)
@@ -61,6 +109,7 @@ class ProductAdmin(admin.ModelAdmin):
         'thumbnail_preview',
         'name',
         'category',
+        'brand',
         'price_display',
         'discount_display',
         'stock_count',
@@ -69,14 +118,14 @@ class ProductAdmin(admin.ModelAdmin):
         'created_at',
     ]
     list_display_links = ['thumbnail_preview', 'name']
-    list_filter = ['category', 'in_stock', 'created_at']
+    list_filter = ['category', 'brand', 'in_stock', 'created_at']
     search_fields = ['name', 'description']
     list_per_page = 20
     
     # Configuración de formulario
     fieldsets = (
         ('📦 Información del Producto', {
-            'fields': ('name', 'description', 'category')
+            'fields': ('name', 'description', 'category', 'brand')
         }),
         ('💰 Precio y Stock', {
             'fields': ('price', 'discount_price', 'stock_count'),
