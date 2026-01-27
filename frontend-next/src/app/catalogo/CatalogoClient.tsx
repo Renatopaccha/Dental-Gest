@@ -70,14 +70,14 @@ export function CatalogoClient() {
     const filtersDescription = getActiveFiltersDescription();
 
     return (
-        <div className="flex-grow">
-            {/* Header de resultados */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                <div>
+        <div className="flex-grow min-w-0">
+            {/* Header de resultados - Mobile optimized */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+                <div className="min-w-0">
                     {loading ? (
                         <div className="h-5 w-32 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
                     ) : (
-                        <p className="text-slate-600 dark:text-slate-400">
+                        <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
                             {products.length === 0 ? (
                                 <span>No se encontraron productos</span>
                             ) : (
@@ -88,7 +88,7 @@ export function CatalogoClient() {
                         </p>
                     )}
                     {filtersDescription && (
-                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 truncate">
                             {filtersDescription}
                         </p>
                     )}
@@ -96,7 +96,7 @@ export function CatalogoClient() {
                 <select
                     value={ordering}
                     onChange={(e) => setOrdering(e.target.value)}
-                    className="px-4 py-2 border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full sm:w-auto px-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm min-h-[44px]"
                 >
                     <option value="-created_at">Más recientes</option>
                     <option value="price">Precio: menor a mayor</option>
@@ -106,37 +106,37 @@ export function CatalogoClient() {
                 </select>
             </div>
 
-            {/* Loading skeleton */}
+            {/* Loading skeleton - Mobile first grid */}
             {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                     {[1, 2, 3, 4, 5, 6].map((i) => (
                         <div
                             key={i}
-                            className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm animate-pulse"
+                            className="bg-white dark:bg-slate-800 rounded-xl sm:rounded-2xl overflow-hidden shadow-sm animate-pulse"
                         >
                             <div className="aspect-square bg-gray-200 dark:bg-gray-700" />
-                            <div className="p-4 space-y-3">
+                            <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
                                 <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
                                 <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
-                                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
+                                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-full" />
                             </div>
                         </div>
                     ))}
                 </div>
             ) : products.length === 0 ? (
                 /* Mensaje cuando no hay productos */
-                <div className="text-center py-16">
-                    <div className="text-6xl mb-4">🔍</div>
-                    <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                <div className="text-center py-12 sm:py-16">
+                    <div className="text-5xl sm:text-6xl mb-4">🔍</div>
+                    <h2 className="text-lg sm:text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
                         No se encontraron productos
                     </h2>
-                    <p className="text-slate-500 dark:text-slate-400 mb-6">
+                    <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 px-4">
                         Intenta ajustar los filtros o busca algo diferente.
                     </p>
                 </div>
             ) : (
-                /* Grid de productos */
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                /* Grid de productos - Mobile first: 2 cols on mobile, 3 on desktop */
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
