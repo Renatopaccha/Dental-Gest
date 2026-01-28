@@ -16,11 +16,28 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     Endpoints:
         GET /api/categories/        - Lista todas las categorías
         GET /api/categories/{slug}/ - Detalle de una categoría
+    
+    Filtros disponibles:
+        - ?audience=STUDENT         - Solo categorías para estudiantes + generales
+        - ?audience=PROFESSIONAL    - Solo categorías para profesionales + generales
     """
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
-    lookup_field = 'slug'  # Permite buscar por slug en lugar de ID
+    lookup_field = 'slug'
+    
+    def get_queryset(self):
+        queryset = Category.objects.all()
+        
+        # Filtrar por audiencia
+        audience = self.request.query_params.get('audience')
+        if audience:
+            audience = audience.upper()
+            if audience in ['STUDENT', 'PROFESSIONAL']:
+                queryset = queryset.filter(target_audience__in=[audience, 'GENERAL'])
+            elif audience == 'GENERAL':
+                queryset = queryset.filter(target_audience='GENERAL')
+        
+        return queryset
 
 
 class BrandViewSet(viewsets.ReadOnlyModelViewSet):
@@ -30,11 +47,28 @@ class BrandViewSet(viewsets.ReadOnlyModelViewSet):
     Endpoints:
         GET /api/brands/        - Lista todas las marcas
         GET /api/brands/{slug}/ - Detalle de una marca
+    
+    Filtros disponibles:
+        - ?audience=STUDENT         - Solo marcas para estudiantes + generales
+        - ?audience=PROFESSIONAL    - Solo marcas para profesionales + generales
     """
-    queryset = Brand.objects.all()
     serializer_class = BrandSerializer
     permission_classes = [AllowAny]
     lookup_field = 'slug'
+    
+    def get_queryset(self):
+        queryset = Brand.objects.all()
+        
+        # Filtrar por audiencia
+        audience = self.request.query_params.get('audience')
+        if audience:
+            audience = audience.upper()
+            if audience in ['STUDENT', 'PROFESSIONAL']:
+                queryset = queryset.filter(target_audience__in=[audience, 'GENERAL'])
+            elif audience == 'GENERAL':
+                queryset = queryset.filter(target_audience='GENERAL')
+        
+        return queryset
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
@@ -118,5 +152,15 @@ class ProductViewSet(viewsets.ReadOnlyModelViewSet):
                 queryset = queryset.filter(in_stock=True)
             elif in_stock.lower() == 'false':
                 queryset = queryset.filter(in_stock=False)
+        
+        # Filtrar por audiencia (STUDENT o PROFESSIONAL incluyen GENERAL)
+        audience = self.request.query_params.get('audience')
+        if audience:
+            audience = audience.upper()
+            if audience in ['STUDENT', 'PROFESSIONAL']:
+                # Incluir productos específicos + productos GENERAL
+                queryset = queryset.filter(target_audience__in=[audience, 'GENERAL'])
+            elif audience == 'GENERAL':
+                queryset = queryset.filter(target_audience='GENERAL')
         
         return queryset

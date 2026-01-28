@@ -17,6 +17,7 @@ export interface GetProductsOptions {
     inStock?: boolean;
     search?: string;
     ordering?: string;
+    audience?: string;      // STUDENT, PROFESSIONAL, GENERAL
 }
 
 /**
@@ -47,6 +48,9 @@ export async function getProducts(options?: GetProductsOptions): Promise<Product
         }
         if (options?.ordering) {
             params.append('ordering', options.ordering);
+        }
+        if (options?.audience) {
+            params.append('audience', options.audience);
         }
 
         const queryString = params.toString();
@@ -105,10 +109,18 @@ export async function getProductById(id: number): Promise<ProductDisplay | null>
 
 /**
  * Obtiene todas las categorías
+ * @param audience - Filtro opcional por audiencia (STUDENT, PROFESSIONAL, GENERAL)
  */
-export async function getCategories(): Promise<Category[]> {
+export async function getCategories(audience?: string): Promise<Category[]> {
     try {
-        const response = await fetch(`${API_URL}/categories/`, {
+        const params = new URLSearchParams();
+        if (audience) {
+            params.append('audience', audience);
+        }
+        const queryString = params.toString();
+        const url = `${API_URL}/categories/${queryString ? `?${queryString}` : ''}`;
+
+        const response = await fetch(url, {
             cache: 'no-store',
         });
 
@@ -135,10 +147,18 @@ export async function getCategories(): Promise<Category[]> {
 
 /**
  * Obtiene todas las marcas
+ * @param audience - Filtro opcional por audiencia (STUDENT, PROFESSIONAL, GENERAL)
  */
-export async function getBrands(): Promise<Brand[]> {
+export async function getBrands(audience?: string): Promise<Brand[]> {
     try {
-        const response = await fetch(`${API_URL}/brands/`, {
+        const params = new URLSearchParams();
+        if (audience) {
+            params.append('audience', audience);
+        }
+        const queryString = params.toString();
+        const url = `${API_URL}/brands/${queryString ? `?${queryString}` : ''}`;
+
+        const response = await fetch(url, {
             cache: 'no-store',
         });
 

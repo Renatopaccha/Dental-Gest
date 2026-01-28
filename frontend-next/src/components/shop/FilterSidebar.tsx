@@ -36,13 +36,17 @@ export function FilterSidebar({ isOpen = false, onClose }: FilterSidebarProps) {
         searchParams.get("search") || ""
     );
 
-    // Cargar categorías y marcas al montar
+    // Obtener audiencia actual de la URL
+    const currentAudience = searchParams.get("audience");
+
+    // Cargar categorías y marcas filtradas por audiencia
     useEffect(() => {
         async function loadFilters() {
+            setLoading(true);
             try {
                 const [cats, brds] = await Promise.all([
-                    getCategories(),
-                    getBrands(),
+                    getCategories(currentAudience || undefined),
+                    getBrands(currentAudience || undefined),
                 ]);
                 setCategories(cats);
                 setBrands(brds);
@@ -53,7 +57,31 @@ export function FilterSidebar({ isOpen = false, onClose }: FilterSidebarProps) {
             }
         }
         loadFilters();
-    }, []);
+    }, [currentAudience]);
+
+    // Resetear filtros de categoría y marca cuando cambie la audiencia
+    useEffect(() => {
+        // Verificar si la categoría/marca seleccionada sigue existiendo en las nuevas opciones
+        if (selectedCategory && categories.length > 0) {
+            const categoryExists = categories.some(c => c.slug === selectedCategory);
+            if (!categoryExists) {
+                setSelectedCategory(null);
+                // Actualizar URL silenciosamente
+                const current = new URLSearchParams(searchParams.toString());
+                current.delete('category');
+                router.replace(`/catalogo?${current.toString()}`);
+            }
+        }
+        if (selectedBrand && brands.length > 0) {
+            const brandExists = brands.some(b => b.slug === selectedBrand);
+            if (!brandExists) {
+                setSelectedBrand(null);
+                const current = new URLSearchParams(searchParams.toString());
+                current.delete('brand');
+                router.replace(`/catalogo?${current.toString()}`);
+            }
+        }
+    }, [categories, brands, selectedCategory, selectedBrand, searchParams, router]);
 
     // Prevent body scroll when drawer is open (mobile)
     useEffect(() => {

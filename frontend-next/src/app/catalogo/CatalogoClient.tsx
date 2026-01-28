@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ComingSoon } from "@/components/shop/ComingSoon";
 import { getProducts, GetProductsOptions } from "@/services/productService";
 import { ProductDisplay } from "@/types/product";
 
@@ -28,12 +29,14 @@ export function CatalogoClient() {
                 const minPrice = searchParams.get("min_price");
                 const maxPrice = searchParams.get("max_price");
                 const search = searchParams.get("search");
+                const audience = searchParams.get("audience");
 
                 if (category) options.category = category;
                 if (brand) options.brand = brand;
                 if (minPrice) options.minPrice = parseFloat(minPrice);
                 if (maxPrice) options.maxPrice = parseFloat(maxPrice);
                 if (search) options.search = search;
+                if (audience) options.audience = audience;
 
                 const data = await getProducts(options);
                 setProducts(data);
@@ -48,7 +51,6 @@ export function CatalogoClient() {
         loadProducts();
     }, [searchParams, ordering]);
 
-    // Obtener descripción de filtros activos
     const getActiveFiltersDescription = () => {
         const parts: string[] = [];
         const category = searchParams.get("category");
@@ -56,7 +58,16 @@ export function CatalogoClient() {
         const minPrice = searchParams.get("min_price");
         const maxPrice = searchParams.get("max_price");
         const search = searchParams.get("search");
+        const audience = searchParams.get("audience");
 
+        if (audience) {
+            const audienceLabels: Record<string, string> = {
+                'STUDENT': 'Estudiantes',
+                'PROFESSIONAL': 'Profesionales',
+                'GENERAL': 'General'
+            };
+            parts.push(`sección: ${audienceLabels[audience.toUpperCase()] || audience}`);
+        }
         if (search) parts.push(`"${search}"`);
         if (category) parts.push(`categoría: ${category}`);
         if (brand) parts.push(`marca: ${brand}`);
@@ -124,16 +135,23 @@ export function CatalogoClient() {
                     ))}
                 </div>
             ) : products.length === 0 ? (
-                /* Mensaje cuando no hay productos */
-                <div className="text-center py-12 sm:py-16">
-                    <div className="text-5xl sm:text-6xl mb-4">🔍</div>
-                    <h2 className="text-lg sm:text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                        No se encontraron productos
-                    </h2>
-                    <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 px-4">
-                        Intenta ajustar los filtros o busca algo diferente.
-                    </p>
-                </div>
+                // Si hay filtro de audiencia y no hay productos -> ComingSoon
+                searchParams.get("audience") ? (
+                    <ComingSoon
+                        audienceType={searchParams.get("audience")?.toUpperCase() as "STUDENT" | "PROFESSIONAL" | "GENERAL"}
+                    />
+                ) : (
+                    /* Mensaje genérico cuando no hay productos */
+                    <div className="text-center py-12 sm:py-16">
+                        <div className="text-5xl sm:text-6xl mb-4">🔍</div>
+                        <h2 className="text-lg sm:text-xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                            No se encontraron productos
+                        </h2>
+                        <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 px-4">
+                            Intenta ajustar los filtros o busca algo diferente.
+                        </p>
+                    </div>
+                )
             ) : (
                 /* Grid de productos - Mobile first: 2 cols on mobile, 3 on desktop */
                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">

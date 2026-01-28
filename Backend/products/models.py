@@ -36,6 +36,14 @@ def gallery_path_and_rename(instance, filename):
     return os.path.join('products/gallery/', filename)
 
 
+# Opciones de audiencia para segmentación (usado por Category, Brand y Product)
+AUDIENCE_CHOICES = [
+    ('STUDENT', 'Estudiantes'),
+    ('PROFESSIONAL', 'Profesionales'),
+    ('GENERAL', 'Todos / Ambos'),
+]
+
+
 class Category(models.Model):
     """Categoría de productos odontológicos."""
     name = models.CharField(
@@ -65,6 +73,15 @@ class Category(models.Model):
         verbose_name = "Categoría"
         verbose_name_plural = "Categorías"
         ordering = ['name']
+    
+    # Audiencia objetivo para filtrado contextual
+    target_audience = models.CharField(
+        max_length=15,
+        choices=AUDIENCE_CHOICES,
+        default='GENERAL',
+        verbose_name="Audiencia objetivo",
+        help_text="¿A quién va dirigida esta categoría? (Estudiantes, Profesionales o Ambos)"
+    )
 
     def __str__(self):
         return self.name
@@ -113,6 +130,15 @@ class Brand(models.Model):
         verbose_name = "Marca"
         verbose_name_plural = "Marcas"
         ordering = ['name']
+    
+    # Audiencia objetivo para filtrado contextual
+    target_audience = models.CharField(
+        max_length=15,
+        choices=AUDIENCE_CHOICES,
+        default='GENERAL',
+        verbose_name="Audiencia objetivo",
+        help_text="¿A quién va dirigida esta marca? (Estudiantes, Profesionales o Ambos)"
+    )
 
     def __str__(self):
         return self.name
@@ -163,6 +189,13 @@ class Product(models.Model):
         related_name='products',
         verbose_name="Marca",
         help_text="Marca del producto (opcional)"
+    )
+    target_audience = models.CharField(
+        max_length=15,
+        choices=AUDIENCE_CHOICES,
+        default='GENERAL',
+        verbose_name="Audiencia objetivo",
+        help_text="¿A quién va dirigido este producto? (Estudiantes, Profesionales o Ambos)"
     )
     stock_count = models.PositiveIntegerField(
         default=0,

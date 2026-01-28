@@ -62,6 +62,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'current_price', 'has_discount', 'discount_percentage',
             'category', 'category_name', 'category_slug',
             'brand', 'brand_name', 'brand_slug',
+            'target_audience',
             'stock_count', 'in_stock', 'stock_status',
             'image', 'images', 'created_at', 'updated_at',
         ]
@@ -97,6 +98,7 @@ class ProductListSerializer(serializers.ModelSerializer):
             'current_price', 'has_discount', 'discount_percentage',
             'category_name', 'category_slug',
             'brand_name', 'brand_slug',
+            'target_audience',
             'stock_count', 'in_stock', 'stock_status',
             'image', 'image_count',
         ]

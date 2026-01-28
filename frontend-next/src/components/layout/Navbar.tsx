@@ -93,10 +93,9 @@ export function Navbar() {
                             </div>
                         </Link>
 
-                        {/* Desktop Navigation */}
                         <div className="hidden md:flex space-x-8 items-center">
-                            <Link className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-medium transition" href="/catalogo">Estudiantes</Link>
-                            <Link className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-medium transition" href="/catalogo">Profesionales</Link>
+                            <Link className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-medium transition" href="/catalogo?audience=STUDENT">Estudiantes</Link>
+                            <Link className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-medium transition" href="/catalogo?audience=PROFESSIONAL">Profesionales</Link>
                             <Link className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-medium transition" href="/catalogo">Categorías</Link>
                             <Link className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary font-medium transition" href="#">Sobre Nosotros</Link>
                         </div>
@@ -168,14 +167,14 @@ export function Navbar() {
                 >
                     <div className="px-4 py-4 space-y-1 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-gray-800">
                         <Link
-                            href="/catalogo"
+                            href="/catalogo?audience=STUDENT"
                             onClick={closeMobileMenu}
                             className="block py-3 px-4 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition min-h-[44px] flex items-center"
                         >
                             🎓 Estudiantes
                         </Link>
                         <Link
-                            href="/catalogo"
+                            href="/catalogo?audience=PROFESSIONAL"
                             onClick={closeMobileMenu}
                             className="block py-3 px-4 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition min-h-[44px] flex items-center"
                         >

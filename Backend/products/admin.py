@@ -35,8 +35,9 @@ class ProductImageInline(admin.TabularInline):
 @admin.register(Brand)
 class BrandAdmin(admin.ModelAdmin):
     """Admin para gestionar marcas de productos."""
-    list_display = ['logo_preview', 'name', 'slug', 'product_count', 'created_at']
+    list_display = ['logo_preview', 'name', 'slug', 'audience_badge', 'product_count', 'created_at']
     list_display_links = ['logo_preview', 'name']
+    list_filter = ['target_audience']
     search_fields = ['name']
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ['created_at', 'logo_preview_large']
@@ -45,11 +46,31 @@ class BrandAdmin(admin.ModelAdmin):
         ('Información de la Marca', {
             'fields': ('name', 'slug', 'image', 'logo_preview_large')
         }),
+        ('🎯 Audiencia', {
+            'fields': ('target_audience',),
+            'description': 'Define a quién va dirigida esta marca.'
+        }),
         ('Sistema', {
             'classes': ('collapse',),
             'fields': ('created_at',)
         }),
     )
+    
+    def audience_badge(self, obj):
+        """Muestra badge visual para la audiencia objetivo."""
+        colors = {
+            'STUDENT': ('#3b82f6', '🎓'),
+            'PROFESSIONAL': ('#8b5cf6', '👨‍⚕️'),
+            'GENERAL': ('#6b7280', '👥'),
+        }
+        color, icon = colors.get(obj.target_audience, ('#6b7280', '👥'))
+        label = dict(obj._meta.get_field('target_audience').choices).get(obj.target_audience, 'General')
+        return format_html(
+            '<span style="background: {}; color: white; padding: 3px 8px; '
+            'border-radius: 12px; font-size: 11px; font-weight: 500;">{} {}</span>',
+            color, icon, label
+        )
+    audience_badge.short_description = "Audiencia"
     
     def logo_preview(self, obj):
         if obj.image:
@@ -83,10 +104,41 @@ class BrandAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     """Admin para gestionar categorías de productos."""
-    list_display = ['name', 'slug', 'product_count', 'created_at']
+    list_display = ['name', 'slug', 'audience_badge', 'product_count', 'created_at']
+    list_filter = ['target_audience']
     search_fields = ['name']
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ['created_at']
+    
+    fieldsets = (
+        ('Información de la Categoría', {
+            'fields': ('name', 'slug', 'description')
+        }),
+        ('🎯 Audiencia', {
+            'fields': ('target_audience',),
+            'description': 'Define a quién va dirigida esta categoría.'
+        }),
+        ('Sistema', {
+            'classes': ('collapse',),
+            'fields': ('created_at',)
+        }),
+    )
+    
+    def audience_badge(self, obj):
+        """Muestra badge visual para la audiencia objetivo."""
+        colors = {
+            'STUDENT': ('#3b82f6', '🎓'),
+            'PROFESSIONAL': ('#8b5cf6', '👨‍⚕️'),
+            'GENERAL': ('#6b7280', '👥'),
+        }
+        color, icon = colors.get(obj.target_audience, ('#6b7280', '👥'))
+        label = dict(obj._meta.get_field('target_audience').choices).get(obj.target_audience, 'General')
+        return format_html(
+            '<span style="background: {}; color: white; padding: 3px 8px; '
+            'border-radius: 12px; font-size: 11px; font-weight: 500;">{} {}</span>',
+            color, icon, label
+        )
+    audience_badge.short_description = "Audiencia"
     
     def product_count(self, obj):
         count = obj.products.count()
@@ -110,6 +162,7 @@ class ProductAdmin(admin.ModelAdmin):
         'name',
         'category',
         'brand',
+        'audience_badge',
         'price_display',
         'discount_display',
         'stock_count',
@@ -118,7 +171,7 @@ class ProductAdmin(admin.ModelAdmin):
         'created_at',
     ]
     list_display_links = ['thumbnail_preview', 'name']
-    list_filter = ['category', 'brand', 'in_stock', 'created_at']
+    list_filter = ['target_audience', 'category', 'brand', 'in_stock', 'created_at']
     search_fields = ['name', 'description']
     list_per_page = 20
     
@@ -126,6 +179,10 @@ class ProductAdmin(admin.ModelAdmin):
     fieldsets = (
         ('📦 Información del Producto', {
             'fields': ('name', 'description', 'category', 'brand')
+        }),
+        ('🎯 Audiencia', {
+            'fields': ('target_audience',),
+            'description': 'Define a quién va dirigido este producto. Los productos GENERAL aparecen en ambas secciones.'
         }),
         ('💰 Precio y Stock', {
             'fields': ('price', 'discount_price', 'stock_count'),
@@ -205,6 +262,22 @@ class ProductAdmin(admin.ModelAdmin):
             )
         return format_html('<span style="color: #999;">0</span>')
     image_count.short_description = "Fotos extra"
+    
+    def audience_badge(self, obj):
+        """Muestra badge visual para la audiencia objetivo."""
+        colors = {
+            'STUDENT': ('#3b82f6', '🎓'),      # Azul - Estudiantes
+            'PROFESSIONAL': ('#8b5cf6', '👨‍⚕️'),  # Violeta - Profesionales
+            'GENERAL': ('#6b7280', '👥'),       # Gris - Todos
+        }
+        color, icon = colors.get(obj.target_audience, ('#6b7280', '👥'))
+        label = dict(obj._meta.get_field('target_audience').choices).get(obj.target_audience, 'General')
+        return format_html(
+            '<span style="background: {}; color: white; padding: 3px 8px; '
+            'border-radius: 12px; font-size: 11px; font-weight: 500;">{} {}</span>',
+            color, icon, label
+        )
+    audience_badge.short_description = "Audiencia"
     
     def image_preview(self, obj):
         if obj.image:
