@@ -74,10 +74,12 @@ export default function CatalogoPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
                     <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                         {/* Sidebar de filtros */}
-                        <FilterSidebar
-                            isOpen={isFilterOpen}
-                            onClose={() => setIsFilterOpen(false)}
-                        />
+                        <Suspense fallback={<div className="hidden lg:block w-64 h-96 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-xl"></div>}>
+                            <FilterSidebar
+                                isOpen={isFilterOpen}
+                                onClose={() => setIsFilterOpen(false)}
+                            />
+                        </Suspense>
 
                         {/* Grid de productos */}
                         <Suspense fallback={<ProductGridSkeleton />}>
