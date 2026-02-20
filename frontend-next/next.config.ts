@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
         port: '8000',
         pathname: '/media/**',
       },
+      // Django backend - Render production
+      {
+        protocol: 'https',
+        hostname: '*.onrender.com',
+        pathname: '/media/**',
+      },
       // Imágenes externas permitidas
       {
         protocol: 'https',
