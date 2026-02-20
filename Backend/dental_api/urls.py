@@ -22,8 +22,9 @@ urlpatterns = [
     path('api/finance/', include('finance.urls')),
 ]
 
-# CRÍTICO: Servir archivos media en desarrollo
-# Sin esto, las imágenes subidas desde el admin NO se mostrarán
+# Servir archivos media siempre (necesario para Render)
+# En producción real usar S3/Cloudinary, pero para demo esto funciona
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

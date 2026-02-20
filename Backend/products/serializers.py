@@ -26,7 +26,10 @@ class BrandSerializer(serializers.ModelSerializer):
     
     def get_image(self, obj):
         if obj.image:
-            return f"http://127.0.0.1:8000{obj.image.url}"
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
         return None
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -38,7 +41,10 @@ class ProductImageSerializer(serializers.ModelSerializer):
     
     def get_image(self, obj):
         if obj.image:
-            return f"http://127.0.0.1:8000{obj.image.url}"
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
         return None
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -68,13 +74,18 @@ class ProductSerializer(serializers.ModelSerializer):
         ]
     
     def get_image(self, obj):
+        request = self.context.get('request')
         # 1. Intentar imagen principal
         if obj.image:
-            return f"http://127.0.0.1:8000{obj.image.url}"
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
         # 2. Fallback: Intentar primera imagen de galería
         first_gallery = obj.images.first()
         if first_gallery and first_gallery.image:
-            return f"http://127.0.0.1:8000{first_gallery.image.url}"
+            if request:
+                return request.build_absolute_uri(first_gallery.image.url)
+            return first_gallery.image.url
         return None
 
 class ProductListSerializer(serializers.ModelSerializer):
@@ -104,15 +115,20 @@ class ProductListSerializer(serializers.ModelSerializer):
         ]
     
     def get_image(self, obj):
+        request = self.context.get('request')
         # LÓGICA SMART IMAGE
         # 1. Si el dueño subió foto principal, usala.
         if obj.image:
-            return f"http://127.0.0.1:8000{obj.image.url}"
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
         
         # 2. Si no, busca la primera de la galería automáticamente.
         first_gallery = obj.images.first()
         if first_gallery and first_gallery.image:
-            return f"http://127.0.0.1:8000{first_gallery.image.url}"
+            if request:
+                return request.build_absolute_uri(first_gallery.image.url)
+            return first_gallery.image.url
             
         # 3. Si no hay nada, retorna None (el frontend mostrará placeholder).
         return None
