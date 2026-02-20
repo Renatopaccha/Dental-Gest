@@ -174,6 +174,14 @@ class Product(models.Model):
         verbose_name="Precio de oferta ($)",
         help_text="Precio con descuento (dejar vacío si no hay oferta)"
     )
+    cost_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Precio de costo ($)",
+        help_text="Cuánto costó comprar este producto (para calcular ganancia)"
+    )
     category = models.ForeignKey(
         Category,
         on_delete=models.PROTECT,
@@ -268,6 +276,20 @@ class Product(models.Model):
         elif self.stock_count < 5:
             return "Poco Stock"
         return "En Stock"
+
+    @property
+    def profit_margin(self) -> Decimal:
+        """Ganancia unitaria en dólares (precio de venta - costo)."""
+        if self.cost_price is None:
+            return Decimal('0')
+        return self.current_price - self.cost_price
+
+    @property
+    def profit_margin_percentage(self) -> int:
+        """Porcentaje de ganancia sobre el costo."""
+        if self.cost_price is None or self.cost_price == 0:
+            return 0
+        return int(((self.current_price - self.cost_price) / self.cost_price) * 100)
 
 
 class ProductImage(models.Model):

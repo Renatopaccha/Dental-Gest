@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useCart, CartItem } from "@/context/CartContext";
 import { getDisplayImage } from "@/types/product";
 
-// Número de teléfono de WhatsApp
-const PHONE_NUMBER = "593999999999";
+// Número de teléfono de WhatsApp de Dental GEST_EC
+const PHONE_NUMBER = "5930961340473";
 
 /**
  * Drawer lateral del carrito de compras

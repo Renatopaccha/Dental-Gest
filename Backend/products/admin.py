@@ -184,9 +184,9 @@ class ProductAdmin(admin.ModelAdmin):
             'fields': ('target_audience',),
             'description': 'Define a quién va dirigido este producto. Los productos GENERAL aparecen en ambas secciones.'
         }),
-        ('💰 Precio y Stock', {
-            'fields': ('price', 'discount_price', 'stock_count'),
-            'description': 'Si estableces un precio de oferta, se mostrará como descuento en la tienda.'
+        ('💰 Precio, Costo y Stock', {
+            'fields': ('price', 'discount_price', 'cost_price', 'margin_display', 'stock_count'),
+            'description': 'El margen de ganancia se calcula automáticamente: (Precio Venta - Costo).'
         }),
         ('🖼️ Imagen Principal', {
             'fields': ('image', 'image_preview'),
@@ -198,7 +198,25 @@ class ProductAdmin(admin.ModelAdmin):
         }),
     )
     
-    readonly_fields = ['in_stock', 'created_at', 'updated_at', 'image_preview']
+    readonly_fields = ['in_stock', 'created_at', 'updated_at', 'image_preview', 'margin_display']
+    
+    def margin_display(self, obj):
+        """Muestra el margen de ganancia calculado."""
+        if obj.cost_price:
+            margin = obj.profit_margin
+            percentage = obj.profit_margin_percentage
+            if margin > 0:
+                color = '#28a745'
+            elif margin < 0:
+                color = '#dc3545'
+            else:
+                color = '#6c757d'
+            return format_html(
+                '<span style="color: {}; font-weight: bold;">${:.2f} ({}%)</span>',
+                color, margin, percentage
+            )
+        return "Ingresa el costo para calcular"
+    margin_display.short_description = "Margen de Ganancia"
     
     def thumbnail_preview(self, obj):
         if obj.image:

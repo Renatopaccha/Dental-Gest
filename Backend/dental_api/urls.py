@@ -15,8 +15,11 @@ urlpatterns = [
     # Panel de administración
     path('admin/', admin.site.urls),
     
-    # API REST
+    # API REST - Productos
     path('api/', include('products.urls')),
+    
+    # API REST - Finanzas
+    path('api/finance/', include('finance.urls')),
 ]
 
 # CRÍTICO: Servir archivos media en desarrollo

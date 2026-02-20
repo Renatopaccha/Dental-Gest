@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 
-// Replace with actual number
-const PHONE_NUMBER = "593999999999";
+// Número real de WhatsApp de Dental GEST_EC
+const PHONE_NUMBER = "5930961340473";
 
 export interface WhatsAppButtonProps {
     productName: string;
