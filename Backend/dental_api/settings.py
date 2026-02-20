@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = ['dental-gest.onrender.com', 'localhost', '127.0.0.1', '*']
 
 
 # =============================================================================
@@ -158,12 +158,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # CORS CONFIGURATION (for Next.js frontend)
 # =============================================================================
 
-# Permitir peticiones desde el frontend de Next.js
-# En Render, configurar la variable de entorno CORS_ALLOWED_ORIGINS
-CORS_ALLOWED_ORIGINS = os.environ.get(
-    "CORS_ALLOWED_ORIGINS",
-    "http://localhost:3000,http://127.0.0.1:3000"
-).split(",")
+# Permitir todas las conexiones (demo/prueba)
+CORS_ALLOW_ALL_ORIGINS = True
 
 
 # =============================================================================
