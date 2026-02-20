@@ -82,7 +82,8 @@ class BrandAdmin(admin.ModelAdmin):
         return format_html(
             '<div style="width: 40px; height: 40px; background: #f0f0f0; '
             'border-radius: 4px; display: flex; align-items: center; '
-            'justify-content: center; color: #999; font-size: 10px;">—</div>'
+            'justify-content: center; color: #999; font-size: 10px;">{}</div>',
+            '—'
         )
     logo_preview.short_description = "Logo"
     
@@ -228,7 +229,8 @@ class ProductAdmin(admin.ModelAdmin):
         return format_html(
             '<div style="width: 50px; height: 50px; background: #f0f0f0; '
             'border-radius: 8px; display: flex; align-items: center; '
-            'justify-content: center; color: #999; font-size: 10px;">Sin foto</div>'
+            'justify-content: center; color: #999; font-size: 10px;">{}</div>',
+            'Sin foto'
         )
     thumbnail_preview.short_description = "Foto"
     
@@ -245,7 +247,7 @@ class ProductAdmin(admin.ModelAdmin):
                 'padding: 2px 6px; border-radius: 4px;">-{}%</small></span>',
                 obj.discount_price, obj.discount_percentage
             )
-        return format_html('<span style="color: #999;">—</span>')
+        return format_html('<span style="color: #999;">{}</span>', '—')
     discount_display.short_description = "Oferta"
     
     def stock_status_icon(self, obj):
@@ -278,7 +280,7 @@ class ProductAdmin(admin.ModelAdmin):
                 'padding: 2px 8px; border-radius: 10px;">+{}</span>',
                 count
             )
-        return format_html('<span style="color: #999;">0</span>')
+        return format_html('<span style="color: #999;">{}</span>', '0')
     image_count.short_description = "Fotos extra"
     
     def audience_badge(self, obj):
